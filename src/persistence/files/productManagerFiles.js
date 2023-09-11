@@ -81,6 +81,8 @@ this.initializeProductIdCount(); // Método para inicializar el contador desde e
         contentJSON.push(newProduct);
         console.log("Producto agregado");
 
+    
+
         // tranformamos de json a string y sobreescribimos el archivo
         await fs.promises.writeFile(
           this.path,
@@ -91,11 +93,12 @@ this.initializeProductIdCount(); // Método para inicializar el contador desde e
         // mostramos todos los productos
         const getProducts = contentJSON;
         console.log("todos los productos:", getProducts);
+      
       } else {
-        console.log("El archivo no existe");
+        throw new Error("El archivo no existe");
       }
     } catch (error) {
-      throw console.log("No existe el archivo");
+      throw error; // Lanzamos el error en caso de problemas
     }
   }
 

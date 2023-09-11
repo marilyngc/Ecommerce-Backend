@@ -13,7 +13,7 @@ const app = express();
 // para indicar al servidar que vaa estar ejecutandose en el puerto 8080
 app.listen(port,()=> console.log(`Servidor ejecutandose en el puerto ${port}`));
 
-
+app.use(express.json());
 
 
 

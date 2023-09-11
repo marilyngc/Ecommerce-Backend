@@ -22,5 +22,29 @@
 		"price": 10000,
 		"thumbnail": "gdfg",
 		"stock": 5
+	},
+	{
+		"id": 4,
+		"title": "Magdalena",
+		"description": "Comida sabrosa",
+		"price": 10000,
+		"thumbnail": "gdfg",
+		"stock": 1
+	},
+	{
+		"id": 5,
+		"title": "magdalena",
+		"description": "comida sabrosa",
+		"price": 10000,
+		"thumbnail": "gdfg",
+		"stock": 1
+	},
+	{
+		"id": 6,
+		"title": "sugar",
+		"description": "azucar dulce dulcea",
+		"price": 100,
+		"thumbnail": "dcsa asdc",
+		"stock": 1
 	}
 ]

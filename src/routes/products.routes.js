@@ -5,6 +5,13 @@ const router = Router();
 
 
 
+// middleware de routes
+router.use(function(req,res,next){
+    console.log("peticion recibida");
+    // console.log(req);
+    next(); // objeto que da la continuidad de la ejecucion  => si no lo ponemos, se queda procesando 
+});
+
 // verificamos que funciona la ruta de app.js
 router.get("/",async (req,res)=>{
     //res.json({message:"Estado de productos"});
@@ -50,6 +57,29 @@ router.get("/:productsId", async (req,res)=>{
 });
   
 
+router.post("/", async(req,res)=>{
+try {
+    const productsInfo = req.body;
+    console.log(productsInfo)
+    const product = await productsService.addProducts(  productsInfo.title,
+        productsInfo.description,
+        productsInfo.price,
+        productsInfo.thumbnail,
+        productsInfo.stock
+        );
+
+console.log(product)
+    if (!product) {
+        return res.json({message:"Informacion incompleta"});
+    }
+
+    
+    res.json({message:"Producto creado"});
+    //return product
+} catch (error) {
+    res.json({status:"error",message:error.message});
+}
+});
     
 
 
