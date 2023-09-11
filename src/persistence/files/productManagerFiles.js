@@ -1,7 +1,7 @@
 
 import fs from "fs";
 
-export default class ProductManagerFiles {
+export class ProductManagerFiles {
   constructor(path) {
     // espacio para añadir el archivo
     this.path = path;
