@@ -1,0 +1,26 @@
+[
+	{
+		"id": 1,
+		"title": "peliculas",
+		"description": "harry potter",
+		"price": 20,
+		"thumbnail": "gdfg",
+		"stock": 2
+	},
+	{
+		"id": 2,
+		"title": "Libros",
+		"description": "el principito",
+		"price": 2000,
+		"thumbnail": "gdfg",
+		"stock": 1
+	},
+	{
+		"id": 3,
+		"title": "Disco",
+		"description": "Musica de los 80",
+		"price": 10000,
+		"thumbnail": "gdfg",
+		"stock": 5
+	}
+]
