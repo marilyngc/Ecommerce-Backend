@@ -120,7 +120,7 @@ export class ProductManagerFiles {
       console.log(error.message);
       throw error;
     }
-  }
+  };
 
   async updateProduct(id,title,description,price,thumbnail,stock) {
     try {

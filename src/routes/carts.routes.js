@@ -21,12 +21,46 @@ router.get("/",async (req,res)=>{
 });
 
 
+router.get("/:cid", async (req,res)=>{
+    try {
+     const id = parseInt(req.params.cid);
+        const cartId = await carsService.getCarById(id);
+        console.log(cartId)
+        if(cartId){
+          return  res.json({data:cartId});
+        }else{
+            res.json({message:`No existe el ${id} solicitado`})
+        }
+       
+     } catch (error) {
+         res.json({error:error.message})
+     }
+});
+
 
 router.post("/", async (req,res)=>{
     try {
+
        const newCart = await carsService.createCart();
+       res.json({data:newCart});
     } catch (error) {
         res.json({error:error.message})
     }
-})
+});
+
+router.post("/:cid/product/:pid", async(req,res)=>{
+    try {
+        // validamos si los dos sirven
+          const cartId = parseInt(req.params.cid);
+          const productId = parseInt(req.params.pid);
+
+
+
+
+          res.json({message:"peticion recibida"});
+   
+     } catch (error) {
+         res.json({error:error.message})
+     }
+});
 export {router as cartsRouter};
