@@ -122,22 +122,23 @@ console.log(highestIdProduct)
        const cart = await this.getCarById(cartId);
 
           if (cart) {
-            const product = cart.products.find((product) => product.id === productId);
-       
+            const product= cart.products.find((product) => product.id === productId);
+          
             if (product) {
+          
               // Actualizamos los productos una vez verificado los campos
-             product.quantity++;
+              product.quantity++;
+           
         
             }else{
 
             // Si eno encuntro un producto
             
             const newProduct ={
-              id: this.productIdCount++,
+              id: productId,
               quantity: 1,
             };
-            this.productIdCount++;
-            console.log(     this.productIdCount++ )
+            
             cart.products.push(newProduct);
             }
             
