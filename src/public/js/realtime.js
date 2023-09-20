@@ -38,7 +38,7 @@ socketClient.on("productsArray", ( dataProducts) =>{
     dataProducts.forEach(element => {
         productsElements += 
        ` <li>
-       <p>Nombre: ${element.title} </p>
+       <p>Nombre: ${element.title} </p> <button onClick="deleteProduct(${element.id})">Eliminar </button> 
        </li>`
     });
 
@@ -46,3 +46,7 @@ socketClient.on("productsArray", ( dataProducts) =>{
 
     productList.innerHTML = productsElements;
 });
+
+const deleteProduct = (productId) => {
+
+};
