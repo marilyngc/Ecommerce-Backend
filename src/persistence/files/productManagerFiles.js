@@ -31,7 +31,7 @@ export class ProductManagerFiles {
     }
   }
 
-  async getProduct(ProductInfo) {
+  async getProduct() {
     try {
       if (this.fileExist()) {
         // Leer archivo una vez encontrado en string
@@ -50,57 +50,59 @@ export class ProductManagerFiles {
     }
   }
 
-  async addProducts(title, description, price, thumbnail, stock) {
+  async addProducts(objetArray) {
     try {
       if (this.fileExist()) {
         //leemos el archivo
         const content = await fs.promises.readFile(this.path, "utf-8");
-
+  
         const contentJSON = JSON.parse(content);
-
-        if (!title || !description || !price || !thumbnail || !stock) {
+  
+        if (!objetArray.title || !objetArray.description || !objetArray.price || !objetArray.thumbnail || !objetArray.stock) {
           return console.log("todos los campos son obligatorios");
         }
-
+  
         // Verificamos si ya existe un producto con el mismo título
         const existingProduct = contentJSON.find(
-          (product) => product.title === title
+          (product) => product.title === objetArray.title
         );
         if (existingProduct) {
           return console.log("Ya existe ese producto con ese nombre");
         }
-
+  
         // creamos los productos una vez verificado los campos
         const newProduct = {
           id: this.productIdCount++,
-          title,
-          description,
-          price,
-          thumbnail,
-          stock,
+          title: objetArray.title,
+          description: objetArray.description,
+          price: objetArray.price,
+          thumbnail: objetArray.thumbnail,
+          stock: objetArray.stock,
         };
+  
         // Agregamos el nuevo producto
         contentJSON.push(newProduct);
         console.log("Producto agregado");
-
+  
         // tranformamos de json a string y sobreescribimos el archivo
         await fs.promises.writeFile(
           this.path,
           JSON.stringify(contentJSON, null, "\t")
         );
         console.log("Archivo actualizado");
-
+  
         // mostramos todos los productos
-        const getProducts = contentJSON;
+        const getProducts = JSON.parse(contentJSON);
         console.log("todos los productos:", getProducts);
+  
+        return newProduct;
       } else {
         throw new Error("El archivo no existe");
       }
     } catch (error) {
       throw error; // Lanzamos el error en caso de problemas
     }
-  }
-
+  };
   // función para determinar si existe o no un producto dentro del array
   async getProductsById(id) {
     try {

@@ -1,13 +1,5 @@
 [
 	{
-		"id": 1,
-		"title": "Libros",
-		"description": "el principito",
-		"price": 2000,
-		"thumbnail": "gdfg",
-		"stock": 1
-	},
-	{
 		"id": 3,
 		"title": "Libros",
 		"description": "el principito",
@@ -16,11 +8,19 @@
 		"stock": 1
 	},
 	{
-		"id": 4,
-		"title": "Libros",
-		"description": "el principito",
-		"price": 2000,
-		"thumbnail": "gdfg",
-		"stock": 1
+		"id": 5,
+		"title": "ds",
+		"description": "asd",
+		"price": 23,
+		"thumbnail": "a",
+		"stock": "3"
+	},
+	{
+		"id": 6,
+		"title": "te de manzanilla",
+		"description": "sdf",
+		"price": 200,
+		"thumbnail": "redfg",
+		"stock": "5"
 	}
 ]

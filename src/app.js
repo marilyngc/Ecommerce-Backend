@@ -44,11 +44,26 @@ io.on("connection", async (socket) => {
   // recibir los datos del socket del cliente
   socket.on("addProduct", async (productData) => {
     // primero crea el producto
-    const result = await productsService.addProducts(productData);
+     await productsService.addProducts(productData);
+console.log("creamos el producto creado", productData);
 
     // una vez creados, obtenemos los productos
     const products = await productsService.getProduct();
-  });
-  // mandamos los productos actualizados al cliente
+    console.log("mostramos producto creado", products);
+      // mandamos los productos actualizados al cliente
   io.emit("productsArray", products);
+
+  });
+
+
+  // recibimos el id del prodcuto a eliminar
+  socket.on("deleteProduct", async (productId)=>{
+    // creamos el producto a eliminar
+    const result = await productsService.deleteProduct(productId);
+     // una vez creados, obtenemos los productos
+     const products = await productsService.getProduct();
+       // mandamos los productos actualizados al cliente
+  io.emit("productsArray", products);
+  });
+  
 });
