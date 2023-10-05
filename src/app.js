@@ -1,12 +1,13 @@
 import express, { request, response } from "express";
 import { productsRouter } from "./routes/products.routes.js";
-import { cartsRouter } from "./routes/carts.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-import { viewsRouter } from "./routes/views.routes.js";
-import { productsService } from "./persistence/index.js";
+
+import { connectDB } from "./config/dbConnection.js";
+
+
 
 const port = 8080;
 
@@ -19,6 +20,10 @@ const httpServer = app.listen(port, () =>
   console.log(`Servidor ejecutandose en el puerto ${port}`)
 );
 
+// conexion base de datos
+connectDB();
+
+
 // servidor de websocket
 const io = new Server(httpServer);
 app.use(express.json());
@@ -29,41 +34,10 @@ app.set("view engine", ".hbs");
 app.set("views", path.join(__dirname, "/views"));
 
 // routes
-app.use(viewsRouter);
 app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
+
 
 // socket server
 io.on("connection", async (socket) => {
   console.log("cliente conectado");
-
-  const products = await productsService.getProduct();
-  // mandamos los productos al cliente
-  socket.emit("productsArray", products);
-
-  // recibir los datos del socket del cliente
-  socket.on("addProduct", async (productData) => {
-    // primero crea el producto
-     await productsService.addProducts(productData);
-console.log("creamos el producto creado", productData);
-
-    // una vez creados, obtenemos los productos
-    const products = await productsService.getProduct();
-    console.log("mostramos producto creado", products);
-      // mandamos los productos actualizados al cliente
-  io.emit("productsArray", products);
-
-  });
-
-
-  // recibimos el id del prodcuto a eliminar
-  socket.on("deleteProduct", async (productId)=>{
-    // creamos el producto a eliminar
-    const result = await productsService.deleteProduct(productId);
-     // una vez creados, obtenemos los productos
-     const products = await productsService.getProduct();
-       // mandamos los productos actualizados al cliente
-  io.emit("productsArray", products);
-  });
-  
 });

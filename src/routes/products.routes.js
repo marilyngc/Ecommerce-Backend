@@ -1,118 +1,46 @@
 import Router from "express";
-import { productsService } from "../persistence/index.js";
+import { productsService } from "../dao/index.js";
 const router = Router();
 
-// middleware de routes
-router.use(function (req, res, next) {
-  console.log("peticion recibida");
-  // console.log(req);
-  next(); // objeto que da la continuidad de la ejecucion  => si no lo ponemos, se queda procesando
-});
-
-// verificamos que funciona la ruta de app.js
-router.get("/", async (req, res) => {
-  //res.json({message:"Estado de productos"});
+router.get("/",async(req,res) => {
   try {
-    const limit = req.query.limit; // este dato llega como string
-    //Lo convertimos en number
-    const limitNumber = parseInt(limit);
-    // aqui buscamos la funcion que recibe el producto ingresado
-    const products = await productsService.getProduct();
-
-    // aquí mostramos los productos limitados
-    if (limit) {
-      /*   [1,2,3,4,5] => slice [1,2,3]*/
-      const productsLimit = products.slice(0, limitNumber); // aquí el usuario elige el limite
-      res.send(`El limite de productos es: ${limitNumber} ${productsLimit}`);
-    } else {
-      // si no recibimos el parametro limit, que nos devuelva todod los archivos
-      // una vez que se cumpla la promesa
-      res.json({ data: products });
-    }
+    const result = await productsService.getProduct();
+    res.json({status:"succes",data:result});
   } catch (error) {
-    res.json({ status: "error", message: error.message });
+    res.status(500).json({status:"error",message:error.message});
   }
 });
 
-router.get("/:productsId", async (req, res) => {
+router.post("/",async (req,res) => {
   try {
-    const id = parseInt(req.params.productsId);
-    // aqui solicitamos la funcion que busca el id
-    const product = await productsService.getProductsById(id);
-
-    if (product) {
-      res.json({ data: product });
-    } else {
-      res.send("El id solicitado no existe");
-    }
+    const product = req.body;
+    const result = await productsService.createProduct(product);
+    res.json({status:"succes",data:result});
   } catch (error) {
-    res.json({ status: "error", message: error.message });
+    res.status(500).json({status:"error",message:error.message});
   }
 });
 
-router.post("/", async (req, res) => {
+router.put("/:productId",async (req,res) => {
   try {
-    const productsInfo = req.body;
-    console.log(productsInfo);
-    const product = await productsService.addProducts(
-      productsInfo.title,
-      productsInfo.description,
-      productsInfo.price,
-      productsInfo.thumbnail,
-      productsInfo.stock
-    );
-
-    console.log(product);
-    if (!product) {
-      return res.json({ message: "Informacion incompleta" });
-    }
-
-    res.json({ message: "Producto creado" });
-    //return product
+    const product = req.body;
+    const productId = req.params.productId;
+    const result = await productsService.updateProduct(productId,product,{new:true});
+    res.json({status:"succes",data:result});
   } catch (error) {
-    res.json({ status: "error", message: error.message });
+    res.status(500).json({status:"error",message:error.message});
+  }
+});
+router.delete("/:productId",async (req,res) => {
+  try {
+    const product = req.body;
+    const productId = req.params.productId;
+    const result = await productsService.deleteProduct(productId);
+    res.json({status:"succes",data:result});
+  } catch (error) {
+    res.status(500).json({status:"error",message:error.message});
   }
 });
 
-router.put("/:id", async (req, res) => {
-  try {
-    // NO olvidemos convertirlo en number
-    const id = parseInt(req.params.id);
-    const productsInfo = req.body;
-    // console.log("body", productsInfo)
-    // aqui solicitamos la funcion que busca el id
-    const product = await productsService.updateProduct(
-      id,
-      productsInfo.title,
-      productsInfo.description,
-      productsInfo.price,
-      productsInfo.thumbnail,
-      productsInfo.stock
-    );
-    console.log("sdf", product);
-
-    if (!product) {
-      return res.json({ message: "Informacion incompleta" });
-    }
-
-    res.json({ message: "Producto creado" });
-  } catch (error) {
-    res.json({ status: "error", message: error.message });
-  }
-});
-
-router.delete("/:did", async (req, res) => {
-  try {
-    const id = parseInt(req.params.did);
-    const deleteProduct = await productsService.deleteProduct(id);
-    console.log(deleteProduct);
-    if (!deleteProduct) {
-      return res.json({ message: `El ${id} solicitado no existe` });
-    }
-    res.json({ message: `El ${id} fue eliminado con exito` });
-  } catch (error) {
-    res.json({ status: "error", message: error.message });
-  }
-});
 
 export { router as productsRouter };
