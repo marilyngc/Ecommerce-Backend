@@ -19,6 +19,28 @@ router.post("/",async (req,res) => {
   } catch (error) {
     res.status(500).json({status:"error",message:error.message});
   }
-})
+});
+
+router.put("/:productId",async (req,res) => {
+  try {
+    const product = req.body;
+    const productId = req.params.productId;
+    const result = await productsService.updateProduct(productId,product,{new:true});
+    res.json({status:"succes",data:result});
+  } catch (error) {
+    res.status(500).json({status:"error",message:error.message});
+  }
+});
+router.delete("/:productId",async (req,res) => {
+  try {
+    const product = req.body;
+    const productId = req.params.productId;
+    const result = await productsService.deleteProduct(productId);
+    res.json({status:"succes",data:result});
+  } catch (error) {
+    res.status(500).json({status:"error",message:error.message});
+  }
+});
+
 
 export { router as productsRouter };
