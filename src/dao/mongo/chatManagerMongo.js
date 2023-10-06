@@ -22,7 +22,7 @@ try {
     return result
 } catch (error) {
     console.log("getMessages", error.message);
-    throw new Error("No se pudo crear el mesanje");
+    
 }
     }
 }

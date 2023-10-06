@@ -6,6 +6,7 @@ import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import { chatService } from "./dao/index.js";
 import { connectDB } from "./config/dbConnection.js";
+import { viewsRouter } from "./routes/views.routes.js";
 
 
 
@@ -35,22 +36,28 @@ app.set("views", path.join(__dirname, "/views"));
 
 // routes
 app.use("/api/products", productsRouter);
+app.use(viewsRouter)
 
 
 // socket server
 io.on("connection", async (socket) => {
+
+
   console.log("cliente conectado");
 
 
   socket.emit("chatHistory", chatService);
 
 // recibimos el mensaje de cada usuario
-    socket.on("msgChat", (data)=>{
+    socket.on("msgChat",async (data)=>{
         console.log(data);
-        chat.push(data);
+      
+        // guardamos el mensaje en la base de datos de forma asíncrona
+        const message = await chatService.addMessage(data);
 
+ 
         // enviamos el historial del chat a todos los ususrios conectados
-        io.emit("chatHistory",chatService);
+        io.emit("chatHistory",message);
     });
 
     // recibimos mensaje de coneccion de nuevo cliente
