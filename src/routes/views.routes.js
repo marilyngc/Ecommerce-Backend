@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { productsService } from "../persistence/index.js";
+import { productsService } from "../dao/index.js";
 const router = Router();
 
 router.get("/",async (req,res) =>{
@@ -13,6 +13,10 @@ router.get("/",async (req,res) =>{
 
 router.get("/realtimeproducts",(req,res) =>{
     res.render("realtime"); // nombre del archivo que  contiene la vista
+});
+
+router.get("/chat",(req,res) =>{
+    res.render("chat"); // nombre del archivo que  contiene la vista
 });
 
 export {router as viewsRouter}

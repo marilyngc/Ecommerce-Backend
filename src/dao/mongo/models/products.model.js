@@ -21,6 +21,13 @@ import mongoose from "mongoose";
             type:Number,
             require:true,
         },
+        
+            code:{
+                type:String,
+                require:true,
+                unique:true
+            },
+      
 		thumbnail: {
             type:String,
            

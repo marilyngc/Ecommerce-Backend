@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { carsService } from "../persistence/index.js";
+import { cartsService, productsService } from "../dao/index.js";
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.use(function(req,res,next){
 // verificamos que funciona la ruta de app.js
 router.get("/",async (req,res)=>{
    try {
-    const carts = await carsService.getCart();
+    const carts = await cartsService.getCart();
     res.json({data:carts});
    } catch (error) {
     res.json({error:error.message})
@@ -23,8 +23,8 @@ router.get("/",async (req,res)=>{
 
 router.get("/:cid", async (req,res)=>{
     try {
-     const id = parseInt(req.params.cid);
-        const cartId = await carsService.getCarById(id);
+     const id = req.params.cid;
+        const cartId = await cartsService.getCarById(id);
         console.log(cartId)
         if(cartId){
           return  res.json({data:cartId});
@@ -41,10 +41,10 @@ router.get("/:cid", async (req,res)=>{
 router.post("/", async (req,res)=>{
     try {
 
-       const newCart = await carsService.createCart();
-       res.json({data:newCart});
+       const newCart = await cartsService.createCart();
+       res.json({status:"succes",data:newCart});
     } catch (error) {
-        res.json({error:error.message})
+        res.json({status:"error",error:error.message})
     }
 });
 
@@ -53,8 +53,9 @@ router.post("/:cid/product/:pid", async(req,res)=>{
         // validamos si los dos sirven
           const cartId = parseInt(req.params.cid);
           const productId = parseInt(req.params.pid);
-
-          const newProduct = await carsService.addProductToCart(cartId,productId);
+          const cart = await cartsService.getCarById(cartId);
+          const product = await productsService.getProductsById(productId)
+          const newProduct = await cartsService.addProductToCart(cart,product);
 
           res.json({message: "Agregando producto al carrito...",newProduct});
        
