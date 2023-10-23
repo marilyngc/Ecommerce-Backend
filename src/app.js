@@ -1,5 +1,6 @@
 import express, { request, response } from "express";
 import { productsRouter } from "./routes/products.routes.js";
+import { cartsRouter } from "./routes/carts.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
@@ -27,7 +28,8 @@ connectDB();
 
 // servidor de websocket
 const io = new Server(httpServer);
-app.use(express.json());
+app.use(express.json()); // para recibir formato json en las peticiones
+app.use(express.urlencoded({extended:true})); // en caso de usar un formulario
 
 // configuracion de handlebars
 app.engine(".hbs", engine({ extname: ".hbs" }));
@@ -36,7 +38,8 @@ app.set("views", path.join(__dirname, "/views"));
 
 // routes
 app.use("/api/products", productsRouter);
-app.use(viewsRouter)
+app.use("/api/carts",cartsRouter);
+app.use(viewsRouter);
 
 
 // socket server

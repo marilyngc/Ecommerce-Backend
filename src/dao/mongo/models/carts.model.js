@@ -5,7 +5,10 @@ const carSchema = new mongoose.Schema({
     products:{
         type:[
             {
-                productId:String,
+                productId:{
+                    type:mongoose.Schema.Types.ObjectId,
+                    ref:"products" // nombre de la coleccion que vamos a usar
+                },
                 quantity:{
                     type:Number,
                     required:true
