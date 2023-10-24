@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginate from "mongoose-paginate-v2";
 
 // creamos la coleccion 
  const  productsCollection = "products";
@@ -46,4 +46,6 @@ import mongoose from "mongoose";
 
 // el modelo nos sirve para realizar operaciones sobre la coleccion users
 
+
+productSchema.plugin(mongoosePaginate);
  export const productsModel = mongoose.model(productsCollection,productSchema);

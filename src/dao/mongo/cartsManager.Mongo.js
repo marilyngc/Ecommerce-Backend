@@ -84,8 +84,8 @@ export class CartsManagerMongo {
           if (productExist >= 0) {
             // si el producto existe
             cart.products[productExist] ={
-              ...cart.products[productExist],
-              quantity: newQuantity
+              ...cart.products[productExist].quantity = newQuantity
+      
             }
             const result = await this.model.findByIdAndUpdate(cartId,productId,{new:true});
             return result;

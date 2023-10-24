@@ -2,7 +2,7 @@
 import { __dirname } from "../utils.js";
 
 import { ProductsManagerMongo } from "./mongo/productsManager.Mongo.js";
-import { CartsManagerMongo} from "./mongo/cartsManagerMongo.js";
+import { CartsManagerMongo} from "./mongo/cartsManager.Mongo.js";
 import { ChatManagerMongo } from "./mongo/chatManager.Mongo.js";
 
 // ruta de donde podemos encontrar los archivos json en local
