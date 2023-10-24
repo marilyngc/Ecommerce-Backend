@@ -3,9 +3,16 @@ import { productsService } from "../dao/index.js";
 const router = Router();
 
 router.get("/",async (req,res) =>{
-    const products = await productsService.getProduct();
-    //console.log(products)
-    res.render("home",{products});// nombre del archivo que  contiene la vista
+    const products = await productsService.getProductsPaginate();
+   // console.log(products)
+
+    const dataProducts = {
+        status:"success",
+        payload:products.docs,
+        totalPages: products.totalPages,
+       // prePage
+    }
+    res.render("home",dataProducts);// nombre del archivo que  contiene la vista
 });
 
 

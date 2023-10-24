@@ -1,6 +1,10 @@
 
     <h1>Home</h1>
 
-{{#each products}}
+{{#each payload}}
 <div>Nombre del producto: {{this.title}}</div>
+<button onclick="addToCart(`{{this._id}}`)">Agregar al carrito</button>
 {{/each }}
+
+<script src="/js/home.js"></script>
+ 
