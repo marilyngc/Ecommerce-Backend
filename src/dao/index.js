@@ -1,9 +1,9 @@
 
 import { __dirname } from "../utils.js";
 
-import { ProductsManagerMongo } from "./mongo/productsManagerMongo.js";
+import { ProductsManagerMongo } from "./mongo/productsManager.Mongo.js";
 import { CartsManagerMongo} from "./mongo/cartsManagerMongo.js";
-import { ChatManagerMongo } from "./mongo/chatManagerMongo.js";
+import { ChatManagerMongo } from "./mongo/chatManager.Mongo.js";
 
 // ruta de donde podemos encontrar los archivos json en local
 // const productsUrl = path.join(__dirname,"/files/products.json");
