@@ -68,4 +68,35 @@ router.post("/:cid/product/:pid", async(req,res)=>{
          res.json({error:error.message})
      }
 });
+router.delete("/:cid/product/:pid", async(req,res)=>{
+    try {
+        // validamos si los dos sirven
+          const cartId = parseInt(req.params.cid);
+          const productId = parseInt(req.params.pid);
+          const cart = await cartsService.getCarById(cartId);
+          const product = await productsService.getProductsById(productId)
+          const newProduct = await cartsService.deleteProduct(cart,product);
+
+          res.json({message: "Eliminando producto del carrito...",newProduct});
+   
+     } catch (error) {
+         res.json({error:error.message})
+     }
+});
+router.put("/:cid/product/:pid", async(req,res)=>{
+    try {
+        // validamos si los dos sirven
+          const cartId = parseInt(req.params.cid);
+          const productId = parseInt(req.params.pid);
+          const {newQuantity} = req.body;
+          const cart = await cartsService.getCarById(cartId);
+          const product = await productsService.getProductsById(productId)
+          const newProduct = await cartsService.updateProductCart(cart,product,newQuantity)
+
+          res.json({message: "Eliminando producto del carrito...",newProduct});
+   
+     } catch (error) {
+         res.json({error:error.message})
+     }
+});
 export {router as cartsRouter};

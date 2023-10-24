@@ -20,4 +20,5 @@ const carSchema = new mongoose.Schema({
 });
 
 
+
 export const cartsModel = mongoose.model(cartsCollection,carSchema);
