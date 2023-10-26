@@ -23,13 +23,12 @@ export class ProductsManagerMongo {
       throw new Error("No se pudo capturar los productos");
     }
   };
-  async getProductsPaginate() {
+  async getProductsPaginate(query, options) {
     try {
       const result = await this.model.paginate(
         {},
-        {limit:5,
-        page:1,
-        lean:true,
+        {query,
+          options
     }
       );
       return result;
@@ -62,9 +61,12 @@ export class ProductsManagerMongo {
   }
   async deleteProduct(id) {
     try {
+     
       const result = await this.model.findByIdAndDelete(id);
+
+  
       if (!result) {
-        throw new Error("No se pudo encontrar el producto a eliminar");
+      throw new Error("No se pudo encontrar el producto a eliminar");
       }
       return result;
     } catch (error) {

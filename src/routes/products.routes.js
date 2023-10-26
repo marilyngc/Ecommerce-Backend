@@ -33,9 +33,10 @@ router.put("/:productId",async (req,res) => {
 });
 router.delete("/:productId",async (req,res) => {
   try {
-    const product = req.body;
+ 
     const productId = req.params.productId;
     const result = await productsService.deleteProduct(productId);
+    console.log(result)
     res.json({status:"succes",data:result});
   } catch (error) {
     res.status(500).json({status:"error",message:error.message});
