@@ -34,7 +34,9 @@ router.get("/",async (req,res) =>{
 });
 
 
-
+router.get("/login", (req,res) => {
+    res.render("users")
+});
 
 router.get("/realtimeproducts",(req,res) =>{
     res.render("realtime"); // nombre del archivo que  contiene la vista
