@@ -34,16 +34,29 @@ router.get("/",async (req,res) =>{
 });
 
 
-router.get("/login", (req,res) => {
-    res.render("users")
+router.get("/login", (req,res) => { //la vista en main.hbs
+    res.render("login")
+}); 
+router.get("/signUp", (req,res) => { //la vista en main.hbs
+    res.render("signupView")
+}); 
+router.get("/profile", (req,res) => {//la vista en main.hbs
+
+    const userName = req.session.name;
+    if (userName) {
+        res.render("profile",{userName});
+    }else{
+        res.redirect("/login");
+    }
+
+}); 
+
+router.get("/realtimeproducts",(req,res) =>{//la vista en main.hbs
+    res.render("realtime"); // nombre del archivo que  contiene la vista en realTime.hbs
 });
 
-router.get("/realtimeproducts",(req,res) =>{
-    res.render("realtime"); // nombre del archivo que  contiene la vista
-});
-
-router.get("/chat",(req,res) =>{
-    res.render("chat"); // nombre del archivo que  contiene la vista
+router.get("/chat",(req,res) =>{//la vista en main.hbs
+    res.render("chat"); // nombre del archivo que  contiene la vista en chat.hbs
 });
 
 export {router as viewsRouter}

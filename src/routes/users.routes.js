@@ -1,37 +1,66 @@
 import { Router } from "express";
+import { usersModel } from "../dao/mongo/models/users.model.js";
 
 const router = Router();
 
-
-router.post("/login", (req,res)  => {
+router.post("/login", async (req, res) => {
+  try {
     const loginForm = req.body;
-    req.session.email = loginForm.email;
-    req.session.name = loginForm.name;
+    // comprobar que existe el usuario
+    const user = await usersModel.findOne({ email: loginForm.email });
+    if (!user) {
+      return res.render("login", { error: "Este usuario no está registrado" });
+    }
+    // verificar contraseña
+    if (user.password !== loginForm) {
+      return res.render("login", { error: "Credenciales invalidas" });
+    }
+    // si el usuario existe y contraseña valida, entonces creamos la session del usuario
 
-    console.log(req.session);
+    req.session.name = user.name;
+    res.redirect("/profile");
+  } catch (error) {
+    res.render("login", {
+      error: "no se pudo iniciar sesioón para este usuario",
+    });
+  }
 
-    res.send("peticion login")
+  console.log(req.session);
+
+  res.send("peticion login");
 });
 
-
-router.get("/profile", (req,res) => {
-    console.log(req.session);
-    req.session.name
-     ?   res.send(`Welcome ${req.session.name}!!`)
+router.get("/profile", (req, res) => {
+  console.log(req.session);
+  req.session.name
+    ? res.send(`Welcome ${req.session.name}!!`)
     : res.send("you need to login");
-    
 });
 
-
-router.get("/logout", (req,res) => {
-    req.session.destroy(error => {
-        if (error) {
-            return res.send("can't log out")
-        }else{
-            res.send("session ended ");
-        }
-       
-    })
+router.get("singUp", async (req, res) => {
+  try {
+    const signUpForm = req.body;
+    const result = await usersModel.create(signUpForm);
+    res.render("login", { message: "usuario conectado" });
+  } catch (error) {
+    res.render("signupView", { error: "no se pudo registrar el usuario" });
+  }
 });
 
-export {router as usersRouter}
+router.get("/logout", async (req, res) => {
+
+    try {
+        req.session.destroy((error) => {
+            if (error) {
+              return res.render("profile",{error:"can't log out"});
+            } else {
+              res.redirect("/login");
+            }
+          });
+    } catch (error) {
+        
+    }
+
+});
+
+export { router as usersRouter };

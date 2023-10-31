@@ -11,6 +11,9 @@ import { connectDB } from "./config/dbConnection.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
+
+
 
 const port = 8080;
 
@@ -23,6 +26,12 @@ app.use(cookieParser("keyCookies"));
 
 // configuracion de session
 app.use(session({
+  // agregar almacenamiento de session de mongo
+  store:MongoStore.create({
+    ttl:500,
+    mongoUrl: "mongodb+srv://Marilyn:bKFBJlXjAWVtcyb7@maricluster.3nfwgsn.mongodb.net/ecommerceDB?retryWrites=true&w=majority"
+
+  }),
   // la contraseña
   secret:"keySession",
   // estas dos propiedades me van a dejar guardar los datos en las sesiones y mantener actualizados los datpss
