@@ -4,11 +4,12 @@
 <p>{{message}}</p>
 <p>{{error}}</p>
 
-<form method="post" action="/api/users/login">
+<form method="post" action="/api/users/login" id="loginForm">
     <input type="email" name="email" placeholder="user addres " />
+    <br>
   <input type="password" name="password" placeholder="user password" />
 
-    <button>login</button>
+    <button type="submit" >login</button>
 </form>
 
-<script src="/js/users.js"></script>
+<script src="/js/login.js"></script>

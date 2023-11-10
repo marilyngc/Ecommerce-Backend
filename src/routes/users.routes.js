@@ -1,11 +1,17 @@
 import { Router } from "express";
 import { usersModel } from "../dao/mongo/models/users.model.js";
-
+import {generateToken} from "./utils.js";
+ 
 const router = Router();
 
 router.post("/login", async (req, res) => {
   try {
     const loginForm = req.body;
+    const token = generateToken(loginForm)
+
+    // guardar la cookie en su almacenamiento de cookie
+    res.cookie("cookieToken",token).json({status:"success", message:"login Exitoso"});
+
     // comprobar que existe el usuario
     const user = await usersModel.findOne({ email: loginForm.email });
     if (!user) {
@@ -30,6 +36,11 @@ router.post("/login", async (req, res) => {
   res.send("peticion login");
 });
 
+
+router.get("/profile", password.authenticate("jwtAuth",{session:false}),(req,res) => {
+  res.send("Welcome!!");
+})
+// por defecto passport usa session. le indicamos que no vamos a usar session con {session:false} 
 router.get("/profile", (req, res) => {
   console.log(req.session);
   req.session.name

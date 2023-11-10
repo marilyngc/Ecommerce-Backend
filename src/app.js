@@ -9,10 +9,9 @@ import { Server } from "socket.io";
 import { chatService } from "./dao/index.js";
 import { connectDB } from "./config/dbConnection.js";
 import { viewsRouter } from "./routes/views.routes.js";
-import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
-
+import {initializePassport} from "./config/passport.config.js";
 
 
 const port = 8080;
@@ -22,22 +21,13 @@ const app = express();
 // middleare
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true})); // para leer formualrios
-app.use(cookieParser("keyCookies"));
+app.use(express.json()); // para leer json
+app.use(cookieParser());
 
-// configuracion de session
-app.use(session({
-  // agregar almacenamiento de session de mongo
-  store:MongoStore.create({
-    ttl:500,
-    mongoUrl: "mongodb+srv://Marilyn:bKFBJlXjAWVtcyb7@maricluster.3nfwgsn.mongodb.net/ecommerceDB?retryWrites=true&w=majority"
+// configuracion de passport
+initializePassport();
+app.use(passport.initialize());
 
-  }),
-  // la contraseña
-  secret:"keySession",
-  // estas dos propiedades me van a dejar guardar los datos en las sesiones y mantener actualizados los datpss
-  resave:true,
-  saveUninitialized:true
-}));
 
 
 // para indicar al servidar que vaa estar ejecutandose en el puerto 8080
