@@ -3,9 +3,12 @@ import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken";
 import { config } from './config/config.js';
 
+
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // VENTAJA => evita muchos errores sobre las rutas de los archivos cuando trabajamos con otros programadores
+
+
 
 
 // generar token

@@ -10,7 +10,6 @@ import { chatService } from "./dao/index.js";
 import { connectDB } from "./config/dbConnection.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import cookieParser from "cookie-parser";
-import MongoStore from "connect-mongo";
 import {initializePassport} from "./config/passport.config.js";
 
 
@@ -23,6 +22,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({extended:true})); // para leer formualrios
 app.use(express.json()); // para leer json
 app.use(cookieParser());
+
+
+
 
 // configuracion de passport
 initializePassport();
