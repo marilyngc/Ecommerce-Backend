@@ -11,7 +11,7 @@ import { connectDB } from "./config/dbConnection.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import cookieParser from "cookie-parser";
 import {initializePassport} from "./config/passport.config.js";
-
+import passport from "passport";
 
 const port = 8080;
 
@@ -62,29 +62,15 @@ app.use(viewsRouter);
 
 
 // socket server
-io.on("connection", async (socket) => {
-
-
+io.on("connection", async(socket)=>{
   console.log("cliente conectado");
+  const products = await productsService.getProducts();
+  socket.emit("productsArray", products);
 
-
-  socket.emit("chatHistory", chatService);
-
-// recibimos el mensaje de cada usuario
-    socket.on("msgChat",async (data)=>{
-        console.log(data);
-      
-        // guardamos el mensaje en la base de datos de forma asíncrona
-        const message = await chatService.addMessage(data);
-
- 
-        // enviamos el historial del chat a todos los ususrios conectados
-        io.emit("chatHistory",message);
-    });
-
-    // recibimos mensaje de coneccion de nuevo cliente
-    socket.on("authenticated",(data)=>{
-        // => broadcast es para emitir la información al todos los usuarios menos al que se está logueando
-        socket.broadcast.emit("newUser",`El usuario ${data.name} se acaba de conectar `)
-    });
+  //recibir el producto del socket del cliente
+  socket.on("addProduct",async(productData)=>{
+      const result = await productsService.createProduct(productData);
+      const products = await productsService.getProducts();
+      io.emit("productsArray", products);
+  });
 });

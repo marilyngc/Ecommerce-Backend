@@ -9,6 +9,13 @@ export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // VENTAJA => evita muchos errores sobre las rutas de los archivos cuando trabajamos con otros programadores
 
 
+export const createHash = (password)=>{
+    return bcrypt.hashSync(password,bcrypt.genSaltSync());
+};
+
+export const inValidPassword = (password,user)=>{
+    return bcrypt.compareSync(password,user.password);
+};
 
 
 // generar token
