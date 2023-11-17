@@ -1,61 +1,58 @@
 import { Router } from "express";
-import { usersModel } from "../dao/mongo/models/users.model.js";
-import {generateToken} from "./utils.js";
- 
+import {generateToken} from "../utils.js";
+import passport from "passport" 
+
 const router = Router();
 
-router.post("/login", async (req, res) => {
-  try {
-    const loginForm = req.body;
-    const token = generateToken(loginForm)
+router.post("/login", passport.authenticate("loginLocalStrategy", {
+  session:false,
+  failureRedirect:"/api/sessions/fail-login"
+}) , (req,res)=>{
+  console.log("login-user", req.user);
+  //generamos el token del usuario
+  const token = generateToken(req.user);
+  //enviamos el token al cliente
+  res.cookie("cookieToken",token).json({status:"success", message:"login exitoso"});
+  // res.redirect("/profile")
+});
 
-    // guardar la cookie en su almacenamiento de cookie
-    res.cookie("cookieToken",token).json({status:"success", message:"login Exitoso"});
-
-    // comprobar que existe el usuario
-    const user = await usersModel.findOne({ email: loginForm.email });
-    if (!user) {
-      return res.render("login", { error: "Este usuario no está registrado" });
-    }
-    // verificar contraseña
-    if (user.password !== loginForm) {
-      return res.render("login", { error: "Credenciales invalidas" });
-    }
-    // si el usuario existe y contraseña valida, entonces creamos la session del usuario
-
-    req.session.name = user.name;
-    res.redirect("/profile");
-  } catch (error) {
-    res.render("login", {
-      error: "no se pudo iniciar sesioón para este usuario",
-    });
-  }
-
-  console.log(req.session);
-
-  res.send("peticion login");
+router.get("/fail-login", (req,res)=>{
+  res.render("login",{error:"No se pudo iniciar sesion para el usuario"});
 });
 
 
-router.get("/profile", password.authenticate("jwtAuth",{session:false}),(req,res) => {
+
+router.post("/profile", passport.authenticate("jwtAuth", {
+  session:false,
+  failureRedirect:"/api/sessions/fail-auth"
+}) , (req,res)=>{
+  // console.log("profile-user",req.user);
+  res.json({status:"success",message:"Peticion valida", data:req.user});
+});
+
+router.get("/profile", passport.authenticate("jwtAuth",{session:false}),(req,res) => {
   res.send("Welcome!!");
 })
 // por defecto passport usa session. le indicamos que no vamos a usar session con {session:false} 
-router.get("/profile", (req, res) => {
-  console.log(req.session);
-  req.session.name
-    ? res.send(`Welcome ${req.session.name}!!`)
-    : res.send("you need to login");
+
+
+router.post("/signup", passport.authenticate("signupLocalStrategy",{
+  session:false,
+  failureRedirect:"/api/session/fail-signup"
+}), (req,res) => {
+  res.redirect("/login");
+})
+
+
+
+
+router.get("/fail-signup", (req,res) => {
+  res.render("/signup",{error:"No se pudo registrar al usuario"});
 });
 
-router.get("singUp", async (req, res) => {
-  try {
-    const signUpForm = req.body;
-    const result = await usersModel.create(signUpForm);
-    res.render("login", { message: "usuario conectado" });
-  } catch (error) {
-    res.render("signupView", { error: "no se pudo registrar el usuario" });
-  }
+
+router.get("/fail-auth",(req,res)=>{
+  res.json({status:"error", message:"token invalido"});
 });
 
 router.get("/logout", async (req, res) => {

@@ -14,4 +14,4 @@ import { UsersManagerMongo } from "./mongo/usersManagerMongo.js"
 export const productsService = new  ProductsManagerMongo();
 export const cartsService = new  CartsManagerMongo();
 export const chatService = new ChatManagerMongo();
-export const userService = new UsersManagerMongo();
+export const usersService = new UsersManagerMongo();

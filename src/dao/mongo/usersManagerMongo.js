@@ -37,7 +37,7 @@ export class UsersManagerMongo {
         }
         return result;
       } catch (error) {
-        throw new Error("No se produjo un eror al generar el usuario solicitado");
+        throw new Error("Se produjo un error al generar el usuario solicitado");
       }
     }
 }
