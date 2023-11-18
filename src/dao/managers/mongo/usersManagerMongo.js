@@ -21,7 +21,7 @@ export class UsersManagerMongo {
       try {
         const result = await this.model.findById(userId);
         if (!result) {
-            
+          throw new Error("No existe el usuario solicitado");
         }
         return result;
       } catch (error) {
@@ -35,7 +35,7 @@ export class UsersManagerMongo {
         if (!result) {
             throw new Error("No se pudo encontrar el usuario solicitado");
         }
-        return result;
+        return result
       } catch (error) {
         throw new Error("Se produjo un error al generar el usuario solicitado");
       }

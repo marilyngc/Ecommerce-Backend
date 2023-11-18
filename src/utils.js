@@ -9,8 +9,12 @@ export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // VENTAJA => evita muchos errores sobre las rutas de los archivos cuando trabajamos con otros programadores
 
 
+//Cuando se almacena una contraseña, en lugar de almacenar la contraseña directamente, se almacena su hash junto con la sal utilizada. La sal se genera aleatoriamente para cada contraseña, lo que significa que aunque dos usuarios tengan la misma contraseña, sus hashes serán diferentes debido a las sales únicas.
+
 export const createHash = (password)=>{
-    return bcrypt.hashSync(password,bcrypt.genSaltSync());
+    const saltRounds = 10; // Número de rondas de hashing
+    const salt = bcrypt.genSaltSync(saltRounds);
+    return bcrypt.hashSync(password,salt);
 };
 
 export const inValidPassword = (password,user)=>{
