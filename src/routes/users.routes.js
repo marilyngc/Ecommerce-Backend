@@ -9,17 +9,13 @@ const router = Router();
 
 router.post("/login", passport.authenticate("loginLocalStrategy", {
   session:false,
-  failureRedirect:"/api/sessions/fail-login"
+  failureRedirect:"/api/users/fail-login"
 }), UsersControl.saveLogin);
 
 router.get("/fail-login",UsersControl.failLogin);
 
 
 
-router.post("/profile", passport.authenticate("jwtAuth", {
-  session:false,
-  failureRedirect:"/api/sessions/fail-auth"
-}) , UsersControl.saveProfile);
 
 router.get("/profile", passport.authenticate("jwtAuth",{session:false
 }),UsersControl.getProfile);
@@ -28,7 +24,7 @@ router.get("/profile", passport.authenticate("jwtAuth",{session:false
 
 router.post("/signup", passport.authenticate("signupLocalStrategy",{
   session:false,
-  failureRedirect:"/api/session/fail-signup"
+  failureRedirect:"/api/users/fail-signup"
 }), UsersControl.getSignup);
 
 

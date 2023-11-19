@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { config } from './config/config.js';
 
 

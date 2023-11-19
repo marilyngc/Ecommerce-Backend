@@ -37,18 +37,12 @@ router.get("/",async (req,res) =>{
 router.get("/login", (req,res) => { //la vista en main.hbs
     res.render("login")
 }); 
-router.get("/signUp", (req,res) => { //la vista en main.hbs
+router.get("/signup", (req,res) => { //la vista en main.hbs
     res.render("signupView")
 }); 
 router.get("/profile", (req,res) => {//la vista en main.hbs
-
-    const userName = req.session.name;
-    if (userName) {
-        res.render("profile",{userName});
-    }else{
-        res.redirect("/login");
-    }
-
+        res.render("profile");
+  
 }); 
 
 router.get("/realtimeproducts",(req,res) =>{//la vista en main.hbs

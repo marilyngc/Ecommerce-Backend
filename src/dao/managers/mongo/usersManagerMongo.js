@@ -31,12 +31,15 @@ export class UsersManagerMongo {
 
     async getUserByEmail(userEmail) {
       try {
-        const result = await this.model.findOne({email:userEmail});
+        const result = await this.model.findOne({ email: userEmail.toLowerCase() });
+      
         if (!result) {
-            throw new Error("No se pudo encontrar el usuario solicitado");
+           throw new Error("Se produjo un error al generar el usuario solicitado");
+
         }
         return result
       } catch (error) {
+        console.error(`Error en getUserByEmail: ${error.message}`);
         throw new Error("Se produjo un error al generar el usuario solicitado");
       }
     }

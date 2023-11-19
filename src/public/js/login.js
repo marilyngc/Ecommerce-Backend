@@ -3,12 +3,12 @@ const errorMsg = document.getElementById("errorMsg");
 
 loginForm.addEventListener("submit",async(e)=>{
     e.preventDefault();
-    console.log(e.target)
+    console.log(e.target.email.value)
     const formValues = {
         email:e.target.email.value,
         password: e.target.password.value
     };
-    const response = await fetch("/api/sessions/login", {
+    const response = await fetch("/api/users/login", {
         headers:{
             "Content-type":"application/json"
         },

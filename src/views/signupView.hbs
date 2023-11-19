@@ -1,14 +1,21 @@
 <h1>Vista del registro</h1>
 
 
+
+
+
+  <form action="/api/users/signup" method="post">
+      <input type="text" name="name" placeholder="name" />
+      <br />
+      <input type="text" name="lastname" placeholder="lastname" />
+      <br />
+      <input type="number" name="age" placeholder="age" />
+      <br />
+      <input type="email" name="email" placeholder="email" />
+      <br />
+      <input type="password" name="password" placeholder="password" />
+      <br />
+      <button>sign up</button>
+    </form>
+
 <p style="color: red;">{{error}}</p>
-
-
-<form method="post" action="/api/users/signUp" id="signupForm">
-<input type="text" name="name" placeholder="Your name">
-    <input type="email" name="email" placeholder="user address " />
-  <input type="password" name="password" placeholder="user password" />
-
-    <button type="submit">Registrarse</button>
-</form>
-
