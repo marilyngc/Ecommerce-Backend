@@ -10,7 +10,7 @@ profileBtn.addEventListener("click", () => {
             "Authorization" : `Bearer ${localStorage.getItem("token")}`
 
         },
-    }).then(res => { return res.json()})
+    }).then(res => { return res.json({message:"holaaa"})})
     .then(data =>{ 
         console.log(data)
       

@@ -1,7 +1,9 @@
 import passport from "passport";
 import jwt from "passport-jwt";
-import LocalStrategy from "passport-local"
+import localStrategy from "passport-local"
 import {usersService } from "../dao/index.js";
+import { createHash, inValidPassword } from "../utils.js"; // Asegúrate de que la ruta sea correcta
+
 
 import {config} from "../config/config.js";
 
@@ -10,7 +12,7 @@ const extractJWT = jwt.ExtractJwt; // extraer el token(cookie,query params,body,
 
 export const initializePassport = () => {
        //Estrategia para registrar a los usuarios
-       passport.use("signupLocalStrategy", new LocalStrategy(
+       passport.use("signupLocalStrategy", new localStrategy(
         {
             passReqToCallback:true,
             usernameField:"email", //ahora el campo username es igual al campo email
@@ -19,11 +21,13 @@ export const initializePassport = () => {
             const {first_name,last_name,age} = req.body;
             try {
                 const user = await usersService.getUserByEmail(username);
+                console.log("usuario::::",user)
                 if(user){
-                    //el usuario ya esta registrado
-                    return done(null,false);
+// el usuario ya está registrado, indicamos que el registro falló
+return done(null, false, { message: "Ya existe un usuario con este correo electrónico. Por favor, inicie sesión.",
+ });
                 }
-                //El usuario no esta registrado
+                //El usuario no esta registrado, procedemos a crearlo
                 const newUser = {
                     first_name,
                     last_name,
@@ -31,9 +35,9 @@ export const initializePassport = () => {
                     email:username,
                     password:createHash(password)
                 };
-                console.log(newUser);
+               
                 const userCreated = await usersService.createUser(newUser);
-                return done(null,userCreated);
+                return done(null,userCreated,{message:"Usuario creado"});
             } catch (error) {
                 return done(error);
             }
@@ -43,7 +47,7 @@ export const initializePassport = () => {
 
     
     //Estrategia para login a los usuarios
-    passport.use("loginLocalStrategy", new LocalStrategy(
+    passport.use("loginLocalStrategy", new localStrategy(
         {
             usernameField:"email", //ahora el campo username es igual al campo email
         },
@@ -65,7 +69,7 @@ export const initializePassport = () => {
         }
     ));
 
-
+// perfil
     passport.use("jwtAuth", new JWTStrategy(
         {
             // extraer la información del token
