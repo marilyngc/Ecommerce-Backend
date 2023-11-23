@@ -6,14 +6,15 @@ import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-import { chatService } from "./dao/index.js";
 import { connectDB } from "./config/dbConnection.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import cookieParser from "cookie-parser";
 import {initializePassport} from "./config/passport.config.js";
 import passport from "passport";
+import { config } from "./config/config.js";
 
-const port = 8080;
+
+const port = config.server.port;
 
 const app = express();
 
@@ -34,7 +35,7 @@ app.use(passport.initialize());
 
 // para indicar al servidar que vaa estar ejecutandose en el puerto 8080
 const httpServer = app.listen(port, () =>
-  console.log(`Servidor ejecutandose en el puerto ${port}`)
+  console.log(`server working on ${port}`)
 );
 
 

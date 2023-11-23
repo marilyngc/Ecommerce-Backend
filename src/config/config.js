@@ -1,8 +1,32 @@
 import dotenv from "dotenv";
-dotenv.config();
+import { __dirname } from "../utils.js";
+
+
+const program = new Command()
+
+//especificamos los argumentos
+program
+.option("-mode <modo>","entorno de trabajo","development");
+program.parse();
+const args = program.opts(); //valores de los argumentos
+console.log("arg", args);
+const envMode = args.mode; // recibe valor de development o producción
+
+// aqui le decimos que .env utilizar
+const pathEnv = envMode === "production"
+? path.join(__dirname,"../.env.production")
+: path.join(__dirname,"../.env.development");
+
+dotenv.config({
+    path:pathEnv  // archivos que vamos a usar (production o development)
+
+}); // process.env
 
 export const config = {
-   
+   server:{
+    port:process.env.PORT,
+  
+   },
     // dirrecion de mongoDB
     mongo:{
         url:process.env.MONGO_URL
