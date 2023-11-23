@@ -11,7 +11,7 @@ import { UsersManagerMongo } from "./managers/mongo/usersManagerMongo.js"
 // const cartsUrl = path.join(__dirname,"/files/carts.json");
 
 // aqi podemos acceder a los modelos
-export const productsService = new  ProductsManagerMongo();
-export const cartsService = new  CartsManagerMongo();
-export const chatService = new ChatManagerMongo();
-export const usersService = new UsersManagerMongo();
+export const productsDao = new  ProductsManagerMongo();
+export const cartsDao = new  CartsManagerMongo();
+export const chatDao = new ChatManagerMongo();
+export const usersDao = new UsersManagerMongo();

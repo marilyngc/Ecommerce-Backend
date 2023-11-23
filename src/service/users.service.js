@@ -1,21 +1,21 @@
 // representa la capa de servicio
 
 //importamos la capa de persistencia
-import { usersService } from "../dao/index.js";
+import { usersDao } from "../dao/index.js";
 
 // accede a los metodos de los managers
 export class UsersService{
         // usamos static para poder llamarlos directamente para no crear una instancia
     static createUser(userInfo){
-        return usersService.createUser(userInfo);//  entrega su return
+        return usersDao.createUser(userInfo);//  entrega su return
     };
         // usamos static para poder llamarlos directamente para no crear una instancia
     static getUsersById(userId){
-        return usersService.getUsersById(userId);//  entrega su return
+        return usersDao.getUsersById(userId);//  entrega su return
     };
         // usamos static para poder llamarlos directamente para no crear una instancia
     static getUserByEmail(userEmail){
-        return usersService.getUserByEmail(userEmail);//  entrega su return
+        return usersDao.getUserByEmail(userEmail);//  entrega su return
     };
 
    

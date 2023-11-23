@@ -1,7 +1,8 @@
 // representa la capa de servicio
 
 //importamos la capa de persistencia
-import { cartsService } from "../dao/index.js";
+import { cartsDao } from "../dao/index.js";
+
 
 
 // accede a los metodos de los managers
@@ -9,24 +10,24 @@ import { cartsService } from "../dao/index.js";
 export class CartsService {
       // usamos static para poder llamarlos directamente para no crear una instancia
      static getCart(){
-        return cartsService.getCart();
+        return cartsDao.getCart();
      };
 
      static getCarById(id){
-        return cartsService.getCarById(id);
+        return cartsDao.getCarById(id);
      };
 
      static createCart(){
-        return cartsService.createCart(); 
+        return cartsDao.createCart(); 
      } ;
 
      static addProductToCart(cartId, productId){
-        return cartsService.addProductToCart(cartId, productId);
+        return cartsDao.addProductToCart(cartId, productId);
      };
      static deleteProduct(cartId,productId){
-        return cartsService.deleteProduct(cartId,productId);
+        return cartsDao.deleteProduct(cartId,productId);
      };
      static updateProductCart(cartId,productId,newQuantity){
-        return cartsService.updateProductCart(cartId,productId,newQuantity);
+        return cartsDao.updateProductCart(cartId,productId,newQuantity);
      };
 }

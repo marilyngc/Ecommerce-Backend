@@ -14,6 +14,15 @@ export class ProductsController {
         }
       };
 
+      static getProductId = async(req,res) => {
+        try {
+          const productId = req.params.pid;
+          const result = await productsService.getProductsById(productId);
+          res.json({status:"succes",data:result});
+        } catch (error) {
+          res.status(500).json({status:"error",message:error.message});
+        }
+      }
       static postProduct = async (req,res) => {
         try {
           const product = req.body;

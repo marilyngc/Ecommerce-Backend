@@ -39,7 +39,7 @@ export class ProductsManagerMongo {
   async addProducts(objetArray) {}
   async getProductsById(id) {
     try {
-      const result = await this.model.findById(id);
+      const result = await this.model.findById(id).lean();
       return result;
     } catch (error) {
       throw new Error("No se pudo encontrar el producto solicitado");
