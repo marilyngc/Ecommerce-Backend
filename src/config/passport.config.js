@@ -1,18 +1,18 @@
 import passport from "passport";
 import jwt from "passport-jwt";
-import localStrategy from "passport-local"
-import {usersService } from "../dao/index.js";
+import LocalStrategy from "passport-local"
+import {UsersService } from "../service/users.service.js";
 import { createHash, inValidPassword } from "../utils.js"; // Asegúrate de que la ruta sea correcta
 
 
-import {config} from "../config/config.js";
+import { config } from "./config.js";
 
 const JWTStrategy = jwt.Strategy;
-const extractJWT = jwt.ExtractJwt; // extraer el token(cookie,query params,body, headers)
+const extractJwt = jwt.ExtractJwt; //Extraer el token (cookie,query params, body, headers)
 
-export const initializePassport = () => {
-       //Estrategia para registrar a los usuarios
-       passport.use("signupLocalStrategy", new localStrategy(
+export const initializePassport = ()=>{
+    //Estrategia para registrar a los usuarios
+    passport.use("signupLocalStrategy", new LocalStrategy(
         {
             passReqToCallback:true,
             usernameField:"email", //ahora el campo username es igual al campo email
@@ -20,14 +20,12 @@ export const initializePassport = () => {
         async (req,username,password,done)=>{
             const {first_name,last_name,age} = req.body;
             try {
-                const user = await usersService.getUserByEmail(username);
-                console.log("usuario::::",user)
+                const user = await UsersService.getUserByEmail(username);
                 if(user){
-// el usuario ya está registrado, indicamos que el registro falló
-return done(null, false, { message: "Ya existe un usuario con este correo electrónico. Por favor, inicie sesión.",
- });
+                    //el usuario ya esta registrado
+                    return done(null,false);
                 }
-                //El usuario no esta registrado, procedemos a crearlo
+                //El usuario no esta registrado
                 const newUser = {
                     first_name,
                     last_name,
@@ -35,25 +33,23 @@ return done(null, false, { message: "Ya existe un usuario con este correo electr
                     email:username,
                     password:createHash(password)
                 };
-               
-                const userCreated = await usersService.createUser(newUser);
-                return done(null,userCreated,{message:"Usuario creado"});
+                console.log(newUser);
+                const userCreated = await UsersService.createUser(newUser);
+                return done(null,userCreated);
             } catch (error) {
                 return done(error);
             }
         }
     ));
 
-
-    
     //Estrategia para login a los usuarios
-    passport.use("loginLocalStrategy", new localStrategy(
+    passport.use("loginLocalStrategy", new LocalStrategy(
         {
             usernameField:"email", //ahora el campo username es igual al campo email
         },
         async (username,password,done)=>{
             try {
-                const user = await usersService.getUserByEmail(username);
+                const user = await UsersService.getUserByEmail(username);
                 if(!user){
                     //el usuario no esta registrado
                     return done(null,false);
@@ -69,32 +65,40 @@ return done(null, false, { message: "Ya existe un usuario con este correo electr
         }
     ));
 
-// perfil
     passport.use("jwtAuth", new JWTStrategy(
         {
-            // extraer la información del token
-            jwtFromRequest: extractJWT.fromExtractors([cookieExtractor]),
+            //Extraer la informacion del token
+            jwtFromRequest:extractJwt.fromExtractors([cookieExtractor]),
             secretOrKey:config.tokenKey.key
         },
-        async (jwtPayload,done) => {
+        async (jwtPayload,done)=>{
+            // console.log("jwtPayload",jwtPayload);
             try {
-                return done(null,jwtPayload); // req.user = información dentro del token
+                return done(null,jwtPayload); //req.user = info del token
             } catch (error) {
                 return done(error);
             }
         }
-    ))
+    ));
+};
+
+//funcion para extraer el token de la cookie
+export const cookieExtractor = (req)=>{
+    let token;
+    if(req && req.cookies){ //req?.cookies
+        token = req.cookies["cookieToken"];
+    } else {
+        token = null;
+    }
+    return token;
 };
 
 
-// función para extración el token del cookie
+passport.serializeUser((user,done)=>{
+    done(null, user._id);
+});
 
-const cookieExtractor = (req) => { // req?.cookies
-    if (req && req.cookies ) {
-        token = req.cookies["cookieToken"]; // cookieToken está en utils.js
-    }else{
-        token: null;
-    }
-
-    return token; // pasa a initializePassport()
-}
+passport.deserializeUser(async(id,done)=>{
+    const user = await UsersService.getUserById(id);
+    done(null,user);//req.user = informacion del usuario que traemos de la base de datos
+});

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ViewsController } from "../controller/views.controller.js";
+import { validateToken } from "../utils.js";
 
 const router = Router();
 
@@ -8,7 +9,7 @@ router.get("/",ViewsController.getProductPaginate);
 
 router.get("/login", ViewsController.getLogin); 
 router.get("/signup", ViewsController.getSignup); 
-router.get("/profile", ViewsController.getProfile); 
+router.get("/profile",ViewsController.getProfile); 
 
 router.get("/realtimeproducts",ViewsController.getRealtimeproducts);
 

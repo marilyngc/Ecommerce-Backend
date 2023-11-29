@@ -47,8 +47,6 @@ connectDB();
 
 // servidor de websocket
 const io = new Server(httpServer);
-app.use(express.json()); // para recibir formato json en las peticiones
-app.use(express.urlencoded({extended:true})); // en caso de usar un formulario
 
 // configuracion de handlebars
 app.engine(".hbs", engine({ extname: ".hbs" }));
@@ -60,6 +58,10 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts",cartsRouter);
 app.use("/api/users", usersRouter);
 app.use(viewsRouter);
+
+
+
+
 
 
 // socket server

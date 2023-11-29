@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { config } from './config/config.js';
@@ -23,6 +24,7 @@ export const inValidPassword = (password,user)=>{
 };
 
 
+
 // generar token
 export const generateToken = (user) => {
     const token = jwt.sign({name:user.name, email:user.email},config.tokenKey.key,{expiresIn:"24h"});
@@ -33,8 +35,10 @@ export const generateToken = (user) => {
 // validar token
 export const validateToken = (req,res,next) => {
     // lo vemos en el headers de postMan
-    const authHeader = req.headers["authorization"];
-    // console.log(authHeader);
+    console.log("req.headers",req.headers)
+    
+    const authHeader = req.headers["Authorization"];
+    console.log("headers",authHeader);
 
     // comprobamos si se recibió un header ("Bearer <token>")
     if (!authHeader) return res.sendStatus(401);
@@ -42,7 +46,7 @@ export const validateToken = (req,res,next) => {
     //se hace el split ya que el token viene en el header de la siguiente manera:
     // "Bearer <token>", y solo nos interesa el token
     const token = authHeader.split(" ")[1];
-    // console.log(token);    
+    console.log("token",token);    
     
     // si el token está vacio
     if (token === null) return res.sendStatus(401);
@@ -52,12 +56,16 @@ export const validateToken = (req,res,next) => {
     //2. La clave privada, que es la que usamos antes para firmar el token
     //3. un callback que se ejecutará cuando el token sea verificado.
     // De esta manera verificamos que el token sea válido y que no haya sido modificado externamente, y lo agregamos el objeto request para que pueda ser usado en las rutas.
-    jwt.verify(token.config.tokenKey.key,(err,payload) => {
-        if (err) return res.sendStatus(403);
+    jwt.verify(token,config.tokenKey.key,(err,payload) => {
+        if (err) {
+            console.error("Error verificando el token:", err);
+            return res.sendStatus(403)};
+            console.log(config.tokenKey.key)
         req.user = payload;
         next();
             
         
     });    
+    console.log(config.tokenKey.key)
     
 };
