@@ -8,11 +8,11 @@ export class UsersControl {
   // usamos static para poder llamarlos directamente para no crear una instancia
 static redirectProfile = (req, res) => {
   try {
-      console.log("login-user", req.user);
+      // console.log("login-user", req.user);
 
       //generamos el token del usuario
       const token = generateToken(req.user);
-      console.log("token",token)
+     
       
       //enviamos el token al cliente
       return res
@@ -35,16 +35,16 @@ static redirectProfile = (req, res) => {
 
   static getProfile = (req, res) => {
     // console.log("Usuario en getProfile:", req.user);
-    // const userName = req.user.email ;
-    // res.render("/profile", { userName });
+    const userName = req.user.email ;
+    res.render("/profile", { userName });
     res.json({status:"success",message:"Peticion valida", data:req.user});
 };
 
   static redirectLogin = (req, res) => {
 
   
-   
-      res.redirect("/login");
+    // res.render("/login",{message:"Usuario registrado correctamente"});
+      res.redirect("/profile");
     
   
   };

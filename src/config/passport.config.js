@@ -17,14 +17,17 @@ export const initializePassport = ()=>{
             passReqToCallback:true,
             usernameField:"email", //ahora el campo username es igual al campo email
         },
-        async (req,username,password,done)=>{
+        async (req,username,password,done )=>{
+           
             const {first_name,last_name,age} = req.body;
+         
             try {
                 const user = await UsersService.getUserByEmail(username);
+                // console.log("userNew", user)
                 if(user){
                     //el usuario ya esta registrado
-                    return done(null,false);
-                }
+    // El usuario ya está registrado, lanza un error
+    throw new Error('El usuario ya está registrado.');                }
                 //El usuario no esta registrado
                 const newUser = {
                     first_name,
@@ -33,10 +36,13 @@ export const initializePassport = ()=>{
                     email:username,
                     password:createHash(password)
                 };
-                console.log(newUser);
+                // console.log("usuario creado",newUser);
                 const userCreated = await UsersService.createUser(newUser);
+                // console.log("usuario creado", userCreated)
+                    // El done (hubo errores?, nuevo user)
                 return done(null,userCreated);
             } catch (error) {
+               
                 return done(error);
             }
         }
@@ -50,6 +56,7 @@ export const initializePassport = ()=>{
         async (username,password,done)=>{
             try {
                 const user = await UsersService.getUserByEmail(username);
+                // console.log("userEmail", user)
                 if(!user){
                     //el usuario no esta registrado
                     return done(null,false);

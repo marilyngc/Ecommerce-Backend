@@ -9,7 +9,7 @@ router.get("/",ViewsController.getProductPaginate);
 
 router.get("/login", ViewsController.getLogin); 
 router.get("/signup", ViewsController.getSignup); 
-router.get("/profile",ViewsController.getProfile); 
+router.get("/profile",validateToken,ViewsController.getProfile); 
 
 router.get("/realtimeproducts",ViewsController.getRealtimeproducts);
 

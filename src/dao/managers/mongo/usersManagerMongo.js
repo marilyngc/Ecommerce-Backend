@@ -19,7 +19,7 @@ export class UsersManagerMongo {
    
     async getUsersById(userId) {
       try {
-        const result = await this.model.findById(userId).lean();
+        const result = await this.model.findById(userId)  ;
         if (!result) {
           throw new Error("No existe el usuario solicitado");
         }
@@ -32,10 +32,9 @@ export class UsersManagerMongo {
     async getUserByEmail(userEmail) {
       try {
         const result = await this.model.findOne({ email: userEmail });
-      
-        if (!result) {
-           throw new Error("Se produjo un error al generar el usuario solicitado");
-
+  
+        if (result === null) {
+          return console.log("No se encontró un usuario con ese correo electrónico");
         }
         return result
       } catch (error) {

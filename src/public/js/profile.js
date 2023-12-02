@@ -1,4 +1,4 @@
-
+const welcomeUser = document.getElementById("welcomeUser");
 const profileBtn = document.getElementById("getProfile");
 
 profileBtn.addEventListener("click", () => {
@@ -19,7 +19,6 @@ profileBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded",async()=>{
-    const welcomeUser = document.getElementById("welcomeUser");
     const response = await fetch("/api/users/profile", {
         headers:{
             "Content-type":"application/json"

@@ -27,7 +27,7 @@ export const inValidPassword = (password,user)=>{
 
 // generar token
 export const generateToken = (user) => {
-    const token = jwt.sign({name:user.name, email:user.email},config.tokenKey.key,{expiresIn:"24h"});
+    const token = jwt.sign({name:user.name, email:user.email},config.tokenKey.key);
     return token;
 };
 
@@ -38,25 +38,31 @@ export const validateToken = (req,res,next) => {
     console.log("req.headers",req.headers)
     
     const authHeader = req.headers["Authorization"];
+
     console.log("headers",authHeader);
 
+    // token
+    let token = null;
+
+        if (authHeader && authHeader.toLowerCase().startsWith(`bearer`)) {
+            token = authHeader.split(" ")[1];
+console.log("authHeader", authHeader);   
+        }
+
     // comprobamos si se recibió un header ("Bearer <token>")
-    if (!authHeader) return res.sendStatus(401);
+    if (!authHeader) return res.sendStatus(401).json({error:"authHeader missing  or invalid"});
 
     //se hace el split ya que el token viene en el header de la siguiente manera:
     // "Bearer <token>", y solo nos interesa el token
-    const token = authHeader.split(" ")[1];
-    console.log("token",token);    
+   
     
-    // si el token está vacio
-    if (token === null) return res.sendStatus(401);
-
+   
     // jwt.verify toma como argumentos;
     //1. El token recibido
     //2. La clave privada, que es la que usamos antes para firmar el token
     //3. un callback que se ejecutará cuando el token sea verificado.
     // De esta manera verificamos que el token sea válido y que no haya sido modificado externamente, y lo agregamos el objeto request para que pueda ser usado en las rutas.
-    jwt.verify(token,config.tokenKey.key,(err,payload) => {
+    const decodedToken = jwt.verify(token,config.tokenKey.key,(err,payload) => {
         if (err) {
             console.error("Error verificando el token:", err);
             return res.sendStatus(403)};
@@ -65,7 +71,11 @@ export const validateToken = (req,res,next) => {
         next();
             
         
-    });    
-    console.log(config.tokenKey.key)
+    });   
+    console.log(decodedToken);
+     // si el token está vacio
+     if (!token || decodedToken.id) return res.sendStatus(401).json({error:"authHeader missing  or invalid"});
+
+ 
     
 };

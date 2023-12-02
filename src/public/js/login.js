@@ -1,7 +1,7 @@
 const loginForm = document.getElementById("loginForm");
 const errorMsg = document.getElementById("errorMsg");
 
-loginForm.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e,token) => {
     e.preventDefault();
 
 
@@ -20,6 +20,7 @@ loginForm.addEventListener("submit", async (e) => {
             body: JSON.stringify(formValues),
         });
 
+        // console.log("response",response)
         if (response.status === 200) {
             const result = await response.json();
             if (result.status === "success") {
