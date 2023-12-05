@@ -3,7 +3,7 @@
 
 {{#each payload}}
 <div>Nombre del producto: {{this.title}}, price:{{this.price}}</div>
-<button onclick="addToCart(`{{this._id}}`)">Agregar al carrito</button>
+<button class="addProductToCart" data-product-id =`{{this._id}}` >Agregar al carrito</button>
 
 
 

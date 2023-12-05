@@ -18,6 +18,7 @@ export class ProductsManagerMongo {
     try {
       // lean() es para convertir a archivo  json para ser leido por la plnatilla de handlebars
       const result = await this.model.find().lean();
+      console.log(result)
       return result;
     } catch (error) {
       throw new Error("No se pudo capturar los productos");

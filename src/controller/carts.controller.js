@@ -9,6 +9,7 @@ export class CartsController{
       // usamos static para poder llamarlos directamente para no crear una instancia
     static getCart = async (req, res) => {
         try {
+          
           const carts = await CartsService.getCart();
           res.json({ data: carts });
         } catch (error) {
@@ -92,10 +93,11 @@ export class CartsController{
         }
       };
 
-      static purchaseCart = async(req,res) => {
+      static purcharseCart = async(req,res) => {
         try {
           const {cid:cartId} = req.params;
           const cart = await CartsService.getCarById(cartId);
+          console.log(cart)
           const ticketProducts = [];
           // los productos que se rechaza
           const rejectedProducts = [];

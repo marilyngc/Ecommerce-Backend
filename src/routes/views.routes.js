@@ -10,7 +10,7 @@ router.get("/",ViewsController.getProductPaginate);
 router.get("/login", ViewsController.getLogin); 
 router.get("/signup", ViewsController.getSignup); 
 router.get("/profile",validateToken,ViewsController.getProfile); 
-
+router.get("/cart",ViewsController.getCart);
 router.get("/realtimeproducts",ViewsController.getRealtimeproducts);
 
 router.get("/chat",(req,res) =>{//la vista en main.hbs

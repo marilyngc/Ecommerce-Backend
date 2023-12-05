@@ -22,13 +22,21 @@ export class ViewsController {
         };
     
         const products = await ProductsService.getProductsPaginate(query,options);
-       // console.log(products)
+        // console.log(products)
+        // convertimos los ObjectId en cadenas para que handlebars lo acepte
+        const formattedProducts = products.docs.map(product => {
+            return{
+                ...product._doc,
+                _id:product._id.toString()
+            }
+        })
+    //    console.log(formattedProducts)
     
        //                    htpp://localhost:8080
         const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
         const dataProducts = {
             status:"success",
-            payload:products.docs,
+            payload:formattedProducts,
             totalPages: products.totalPages,
             // si hay pagina anterior
             prevLink : products.hasPrevPage ? `${baseUrl.replace(`page = ${products.page}`, `page = ${products.prevPage}`)}` : null,
@@ -47,6 +55,10 @@ export class ViewsController {
 
     static getProfile = (req,res) => {//la vista en main.hbs
         res.render("profile",{user:req.user});
+  
+};
+    static getCart = (req,res) => {//la vista en main.hbs
+        res.render("cart");
   
 };
 

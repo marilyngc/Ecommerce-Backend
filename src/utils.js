@@ -35,11 +35,11 @@ export const generateToken = (user) => {
 // validar token
 export const validateToken = (req,res,next) => {
     // lo vemos en el headers de postMan
-    console.log("req.headers",req.headers)
+    // console.log("req.headers",req.headers)
     
     const authHeader = req.headers["Authorization"];
 
-    console.log("headers",authHeader);
+    // console.log("headers",authHeader);
 
     // token
     let token = null;
