@@ -18,4 +18,5 @@ router.post("/", CartsController.postCart);
 router.post("/:cid/product/:pid", CartsController.postCartProductId);
 router.delete("/:cid/product/:pid", CartsController.deleteCartProductId);
 router.put("/:cid/product/:pid",CartsController.putCartProductId );
+router.post("/:cid:purchase", CartsController.purcharseCart); 
 export { router as cartsRouter };

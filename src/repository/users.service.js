@@ -1,7 +1,7 @@
 // representa la capa de servicio
 
 //importamos la capa de persistencia
-import { usersDao } from "../dao/index.js";
+import { usersDao } from "../dao/factory.js";
 
 // accede a los metodos de los managers
 export class UsersService{

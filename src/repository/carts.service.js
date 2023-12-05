@@ -1,7 +1,7 @@
 // representa la capa de servicio
 
 //importamos la capa de persistencia
-import { cartsDao } from "../dao/index.js";
+import { cartsDao } from "../dao/factory.js";
 
 
 

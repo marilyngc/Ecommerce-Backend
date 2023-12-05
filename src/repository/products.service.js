@@ -1,7 +1,7 @@
 // representa la capa de servicio
 
 //importamos la capa de persistencia
-import {productsDao} from "../dao/index.js"
+import {productsDao} from "../dao/factory.js"
 
 // accede a los metodos de los managers
 export class ProductsService  {

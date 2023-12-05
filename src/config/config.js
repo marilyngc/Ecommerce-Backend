@@ -32,7 +32,7 @@ dotenv.config({
 export const config = {
    server:{
     port:process.env.PORT,
-  
+     persistence: process.env.PERSISTENCE
    },
     // dirrecion de mongoDB
     mongo:{

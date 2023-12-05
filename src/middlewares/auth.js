@@ -13,7 +13,9 @@ export const checkRole = (roles) => {
         console.log("middleware",res.user);
         if(!roles.includes(req.user.role)) {
             return res.json({status:"error",message:"you don´t have access"})
+        }else{
+            next();
         }
-        next();
+       
     }
 }
