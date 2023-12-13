@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 import {initializePassport} from "./config/passport.config.js";
 import passport from "passport";
 import { config } from "./config/config.js";
-
+import {errorHandler} from "./middlewares/errorHandler.js"
 
 const port = config.server.port;
 
@@ -54,10 +54,12 @@ app.set("view engine", ".hbs");
 app.set("views", path.join(__dirname, "/views"));
 
 // routes
+app.use(viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts",cartsRouter);
 app.use("/api/users", usersRouter);
-app.use(viewsRouter);
+app.use(errorHandler);
+
 
 
 

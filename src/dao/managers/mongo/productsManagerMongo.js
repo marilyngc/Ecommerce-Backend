@@ -1,4 +1,6 @@
 import { productsModel } from "./models/products.model.js";
+import { CustomError } from "../../../service/errors/customError.service.js";
+import { Eerror } from "../../../enum/Eerror.js";
 
 export class ProductsManagerMongo {
   constructor() {
@@ -10,7 +12,13 @@ export class ProductsManagerMongo {
       const result = await this.model.create(productInfo);
       return result;
     } catch (error) {
-      throw new Error("No se pudo crear el producto");
+      // throw new Error("No se pudo crear el producto");
+      CustomError.createError({
+        name:"Create product error",
+        cause:error.message,
+        message:"Datos invalidos para crear el producto",
+        errorCode: Eerror.INVALID_BODY_JSON
+      })
     }
   }
 

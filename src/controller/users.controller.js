@@ -41,10 +41,10 @@ static redirectProfile = (req, res) => {
 };
 
   static redirectLogin = (req, res) => {
-
-  
+    res.render("profile",{user:req.user});
+ 
     // res.render("/login",{message:"Usuario registrado correctamente"});
-      res.redirect("/profile");
+      // res.redirect("/profile");
     
   
   };
