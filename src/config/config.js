@@ -31,6 +31,7 @@ dotenv.config({
 
 export const config = {
    server:{
+    env:process.env.NODE_EMVIRONMENT || "development",
     port:process.env.PORT,
      persistence: process.env.PERSISTENCE
    },
