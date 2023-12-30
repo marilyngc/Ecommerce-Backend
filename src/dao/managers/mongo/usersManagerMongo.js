@@ -13,7 +13,7 @@ export class UsersManagerMongo {
       } catch (error) {
         throw new Error("No se pudo crear el usuario");
       }
-    }
+    };
   
  
    
@@ -31,7 +31,7 @@ export class UsersManagerMongo {
 
     async getUserByEmail(userEmail) {
       try {
-        const result = await this.model.findOne({ email: userEmail });
+        const result = await this.model.findOne({ email: userEmail }).lean();// lean lo convierte en archivo json
   
         if (result === null) {
           return console.log("No se encontró un usuario con ese correo electrónico");
@@ -41,6 +41,16 @@ export class UsersManagerMongo {
         console.error(`Error en getUserByEmail: ${error.message}`);
         throw new Error("Se produjo un error al generar el usuario solicitado");
       }
-    }
+    };
+
+    async updateUser(id,user) {
+      try {
+        const result = await this.model.findByIdAndUpdate(id,user,{new:true});
+        return result;
+      } catch (error) {
+        throw new Error("No se pudo actualizar el usuario");
+      }
+    };
+  
 }
   

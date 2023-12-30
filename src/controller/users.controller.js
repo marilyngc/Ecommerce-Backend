@@ -1,6 +1,8 @@
 // capa de control
 import { UsersService } from "../service/users.service.js";
-import { generateToken } from "../utils.js";
+import { createHash, generateToken, inValidPassword } from "../utils.js";
+import { generateEmailToken, sendChangePasswordEmail, verifyEmailToken } from "../helpers/email.js";
+
 
 // importar la capa de servicio
 
@@ -71,6 +73,64 @@ static redirectProfile = (req, res) => {
           res.redirect("/login");
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      res.json({status:"error",message:error.message})
+    }
   };
+
+
+  static forgotPassword = async (req,res) => {
+
+    try {
+       //capturamos el emial
+    const {email} = req.body;
+
+          // verificar que el usuario exista
+    const user = await UsersService.getUserByEmail(email);
+    //generamos el token
+    const emailToken = generateEmailToken(email,5 * 60);//5min
+      //enviamos correo
+    await sendChangePasswordEmail(req,email,emailToken);
+    res.send(`se envio un enlace a su correo, <a href="/> volver a la pagina login </a>`)
+    } catch (error) {
+      res.json({status:"error",message:error.message});
+    }
+  };
+
+  static resetPassword = async(req,res) => {
+    try {
+      //leemos la variable del token
+      const token = req.query.token;
+      const {newPaswword} = req.body;
+      // obtenemos el correo
+      const validEmail = verifyEmailToken(token);
+      if (!validEmail) {
+        return res.send(`el enlace ya no es valido, genera un nuevo <a href="/ forgot-password">enlace </a>`)
+      };
+      //validamos el usuario 
+      const user = await UsersService.getUserByEmail(validEmail);
+      if (!user) {
+        return res.send(`esta operacion no es valida`);
+      };
+
+      // si son iguales las contraseñas
+      if (inValidPassword(newPaswword,user)) {
+        return res.render("resetPassView",{error:"contraseña invalida",token});
+      };
+
+      // si son diferentes generamos la nueva contraseña
+      const userData = {
+        ...user,
+        password:createHash.apply(newPaswword)
+      };
+
+      // actualizamos el usario
+      await UsersService.updateUser(user._id,userData);
+      return res.render("login",{message:"contraseña actualizada"});
+
+    } catch (error) {
+      res.json({status:"error",message:error.message});
+    }
+  }
+  
 }

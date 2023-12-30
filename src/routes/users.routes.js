@@ -41,4 +41,7 @@ router.get("/fail-auth",UsersControl.failAuth);
 
 router.get("/logout", UsersControl.getLogout);
 
+router.post("/forgot-password",UsersControl.forgotPassword);
+router.post("/reset-password?token",UsersControl.resetPassword)
+
 export { router as usersRouter };

@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/",ProductsController.getProducts);
 router.get("/:productId",ProductsController.getProductId)
-router.post("/",isAuth,  checkRole(["admin"]), ProductsController.postProduct);
+router.post("/",isAuth,  checkRole(["admin","premium"]), ProductsController.postProduct);
 
 router.put("/:productId", ProductsController.putProduct);
 router.delete("/:productId",ProductsController.deleteProduct);

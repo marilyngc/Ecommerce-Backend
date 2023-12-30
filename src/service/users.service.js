@@ -17,6 +17,10 @@ export class UsersService{
     static getUserByEmail(userEmail){
         return usersDao.getUserByEmail(userEmail);//  entrega su return
     };
+    
+    static updateUser(id,user) {
+        return usersDao.updateUser(id,user);
+    };
 
    
     

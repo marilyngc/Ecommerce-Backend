@@ -13,6 +13,15 @@ router.get("/signup", ViewsController.getSignup);
 router.get("/profile",validateToken,ViewsController.getProfile); 
 router.get("/cart",ViewsController.getCart);
 router.get("/realtimeproducts",ViewsController.getRealtimeproducts);
+router.get("/forgot-password",(req,res) =>{
+    res.render("forgotPassView");
+});
+router.get("/reset-password", (req,res) => {
+    const token = req.query.token;
+    res.render("resetPassView",{token});
+})
+
+
 
 router.get("/chat",(req,res) =>{//la vista en main.hbs
     res.render("chat"); // nombre del archivo que  contiene la vista en chat.hbs
