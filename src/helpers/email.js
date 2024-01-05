@@ -1,8 +1,9 @@
 import { config } from "../config/config.js";
-import { jwt } from "jsonwebtoken";
+import pkg from 'jsonwebtoken';
+// import { jwt } from "jsonwebtoken";
 import { transporter } from "../config/email.js";
 
-
+const { jwt } = pkg;
 
 export const generateEmailToken = (email,expireTime) => {
     //generamos token

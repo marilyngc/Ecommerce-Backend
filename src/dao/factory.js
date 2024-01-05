@@ -1,7 +1,7 @@
 import { config } from "../config/config.js";
 
 
-import { __dirname } from "../utils.js";
+// import { __dirname } from "../utils.js";
 
 
 import { ProductsManagerMongo } from "./managers/mongo/productsManagerMongo.js"

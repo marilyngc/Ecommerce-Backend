@@ -4,7 +4,7 @@ import path from "path";
 import { config } from "../config/config.js";
 
 
-const currentEnv =config.server.env;
+const currentEnv = config.server.env;
 //  console.log(process.env);
 
 // variables personalizadas
@@ -16,10 +16,10 @@ const customLevels = {
         debbug:3
     },
     colors:{
-        error:red,
-        abvertence:yellow,
-        info:blue,
-        debbug:magenta
+        error:" red",
+        abvertence:"yellow",
+        info:"blue",
+        debbug:"magenta"
     }
 
 }

@@ -1,0 +1,161 @@
+paths:
+  /api/users/:
+     get:
+     # descripcio que hace get
+      summary: obtener todos los usuarios
+      tags:
+      - Usuarios
+      # tipos de respuestas
+      responses: 
+        "200":
+         description: Los usuarios se obtuvieron correctamente
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: "#components/schemas/User"
+
+
+       "500":
+         description: Hubo un problema en el servidor
+  /api/users/{uid}:
+    get:
+        # descripcio que hace get
+   summary: obtener la informacion de un usuario
+   tags:
+   - Usuarios
+   parameters:
+      - name: uid
+        in: path
+        required: true
+        description: el id del usuario a consultar
+        schema:
+          $type: string
+   # tipos de respuestas
+   responses: 
+     "200":
+      description: se obtuvo correctamente el usuario
+      content:
+        application/json:
+          schema:
+            $ref: "#components/schemas/User"
+
+
+    "500":
+      description: Hubo un problema en el servidor
+    put:
+         # descripcio que hace get
+   summary: actualizar el usuario
+   tags:
+   - Usuarios
+   parameters:
+    - name: uid
+      in: path
+      required: true
+      description: el id del usuario a actualizar
+      schema:
+        $type: string
+   requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#components/requestBodies/createUpdateUser"
+   # tipos de respuestas
+   responses: 
+     "200":
+      description: se actualizó correctamente el usuario
+      content:
+        application/json:
+          schema:
+           $ref: "#components/schemas/UpdateSuccess" 
+
+
+    "500":
+      description: Hubo un problema en el servidor
+
+ components:
+ schemas:
+    User:
+      type: object
+      properties: 
+        _id:
+          type: ObjectId
+          description: id generado por la base de datos
+        first_name:
+          type: string
+          description: nombre del usuario
+        last_name:
+          type: string
+          description: apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+        password:     
+          type: string
+          description: Contraseña encriptada del usuario
+      example:
+        _id: ObjectId("#ehrfidujgh")    
+        first_name: mari
+        last_name: celis
+        email: maril@gmail.com
+        password: vfergvfhbgfthbg4rgy34
+
+      type: object
+      properties: 
+        _id:
+          type: ObjectId
+            description: id generado por la base de datos
+          first_name:
+            type: string
+            description: nombre del usuario
+          last_name:
+            type: string
+            description: apellido del usuario
+          email:
+            type: string
+            description: Correo del usuario
+          password:     
+            type: string
+            description: Contraseña encriptada del usuario
+        example:
+          _id: ObjectId("#ehrfidujgh")    
+          first_name: mari
+          last_name: celis
+          email: maril@gmail.com
+          password: vfergvfhbgfthbg4rgy34
+    UpdateSuccess:
+      type: object
+      properties:   
+        status: 
+          type: string
+        message:
+          type: string  
+      example:
+        status: success
+        message: usuario actualizado      
+ requestBodies:
+    createUser:
+      type: object
+      properties: 
+        first_name:
+          type: string
+          description: nombre del usuario
+        last_name:
+          type: string
+          description: apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+        password:     
+          type: string
+          description: Contraseña encriptada del usuario
+      example:
+        _id: ObjectId("#ehrfidujgh")    
+        first_name: mari
+        last_name: celis
+        email: maril@gmail.com
+        password: vfergvfhbgfthbg4rgy34
+ 
+ 

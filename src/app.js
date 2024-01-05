@@ -2,6 +2,7 @@ import express, { request, response } from "express";
 import { productsRouter } from "./routes/products.routes.js";
 import { cartsRouter } from "./routes/carts.routes.js";
 import { usersRouter } from "./routes/users.routes.js";
+
 import { __dirname } from "./utils.js";
 import path from "path";
 import { engine } from "express-handlebars";
@@ -13,6 +14,10 @@ import {initializePassport} from "./config/passport.config.js";
 import passport from "passport";
 import { config } from "./config/config.js";
 import {errorHandler} from "./middlewares/errorHandler.js"
+
+
+import {swaggerSpecs} from "./config/swagger.config.js";
+import swaggerUi from "swagger-ui-express";
 
 const port = config.server.port;
 
@@ -59,6 +64,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts",cartsRouter);
 app.use("/api/users", usersRouter);
 app.use(errorHandler);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 

@@ -13,7 +13,7 @@ export class ProductsController {
       static getProducts = async(req,res) => {
         try {
           const result = await ProductsService.getProduct();
-          res.json({status:"succes",data:result});
+          res.status(200).json({status:"succes",data:result});
         } catch (error) {
           res.status(500).json({status:"error",message:error.message});
         }

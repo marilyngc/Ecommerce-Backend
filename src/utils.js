@@ -1,12 +1,14 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { config } from './config/config.js';
 
 
-export const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+export const __dirname = dirname(__filename);
 
 // VENTAJA => evita muchos errores sobre las rutas de los archivos cuando trabajamos con otros programadores
 
