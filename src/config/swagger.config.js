@@ -23,7 +23,7 @@ const swaggerOptions = {
 
     },
     // IMPORTANTE => definir donde estan los archivos que van a tener la descripcion de cada una de las rutas
-    apis:[`${path.join(__dirname,"../docs/**/*.yaml")}`],//archivos que contienen la documentación de las rutas
+    apis:[`${path.join(__dirname,"/docs/**/*.yaml")}`],//archivos que contienen la documentación de las rutas
 
 };
 
