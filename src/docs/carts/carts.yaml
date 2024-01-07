@@ -1,0 +1,52 @@
+paths:
+  /api/carts/{cid}/purcharse:
+    post:
+    
+      # Descripción de la operación GET
+      summary: Endpoitn para finalizar la compra del carrito
+      tags:
+        - Carts
+        parameters:
+          - name: cid
+          in: path
+          required: true
+          schema:
+            $type: string
+
+      # Tipo de respuesta
+      responses:
+        "200":
+          description: Todos los productos fueron tomados correctamente 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SuccessPurchaseCart"
+        # "401":
+        #   description: Usuario no autoriazdo 
+        #   content:
+        #     application/json:
+        #       schema:
+        #         type: array
+        #         items:
+        #           $ref: "#/components/schemas/ErrorAuthentication"
+        "500":
+          description: Hubo un problema con el servidor    
+
+components:
+  schemas:
+    SuccessPurchaseCart:
+    type: object
+    properties:
+      status:
+        type: string
+      message:
+        type: string  
+      rejectedProducts: 
+        type: array
+    example:
+      status: success
+      message: compra realizada, algunos productos no se puedieron comprar    
+      rejectedProducts: []
+      

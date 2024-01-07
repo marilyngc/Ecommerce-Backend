@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { CartsController } from "../controller/carts.controller.js";
+import {checkRole, isAuth} from "../middlewares/auth.js"
+
 
 const router = Router();
 
@@ -18,5 +20,5 @@ router.post("/", CartsController.postCart);
 router.post("/:cid/product/:pid", CartsController.postCartProductId);
 router.delete("/:cid/product/:pid", CartsController.deleteCartProductId);
 router.put("/:cid/product/:pid",CartsController.putCartProductId );
-router.post("/:cid:purchase", CartsController.purcharseCart); 
+router.post("/:cid:purchase",isAuth,checkRole(["user","premium"]), CartsController.purcharseCart); 
 export { router as cartsRouter };
