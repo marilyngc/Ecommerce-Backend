@@ -85,3 +85,5 @@ io.on("connection", async(socket)=>{
       io.emit("productsArray", products);
   });
 });
+
+export {app}; //para evitar que se ejecute dos terminales
