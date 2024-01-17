@@ -20,20 +20,13 @@ export const isAuth = (req,res,next) => {
 
 
 // recibe los roles para acceder a una ruta
-export const checkRole = (roles) => {
-    return (req,res,next) => {
-        jwt.verify(req.cookies.accessToken,config.tokenKey.key,(err,user) =>{
-            if (err) {
-                console.log(err);
-            }
-            console.log("middleware",res.user);
-            if(!roles.includes(req.user.role)) {
-                return res.json({status:"error",message:"you don´t have access"})
-            }else{
-                next();
-            }
-        })
-      
-       
+export const checkRole = (roles)=>{
+    return (req,res,next)=>{
+        console.log(req.user);
+        if(!roles.includes(req.user.role)){
+            res.json({status:"error", message:"No tienes accesso"});
+        } else {
+            next();
+        }
     }
-}
+};

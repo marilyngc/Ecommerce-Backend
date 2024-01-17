@@ -1,13 +1,12 @@
 paths:
-  /api/carts/{cid}/purcharse:
+  /api/carts/{cid}/purchase:
     post:
-    
-      # Descripción de la operación GET
+      # Descripción de la operación Post
       summary: Endpoitn para finalizar la compra del carrito
       tags:
         - Carts
-        parameters:
-          - name: cid
+      parameters:
+        - name: cid
           in: path
           required: true
           schema:

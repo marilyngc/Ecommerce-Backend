@@ -46,8 +46,8 @@ const httpServer = app.listen(port, () =>
 
 
 
-// conexion base de datos
-connectDB();
+// // conexion base de datos
+// connectDB();
 
 
 // servidor de websocket

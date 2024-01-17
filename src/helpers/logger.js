@@ -6,6 +6,7 @@ import { config } from "../config/config.js";
 
 const currentEnv = config.server.env;
 //  console.log(process.env);
+//   console.log(currentEnv);
 
 // variables personalizadas
 const customLevels = {
@@ -33,7 +34,7 @@ const devLogger = winston.createLogger({
     // definimos transportes: sistemas de nuestra o almacenamiento de logs
 
     transports:[
-        new winston.transports.Console({level:"debbug"}),
+        new winston.transports.Console({level:"info"}),
     ]
 });
 

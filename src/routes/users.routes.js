@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport" 
 import { UsersControl } from "../controller/users.controller.js";
 import { uploadDocuments, uploadProfile } from "../utils.js";
-import { isAuth } from "../middlewares/auth.js";
+import { checkRole, isAuth } from "../middlewares/auth.js";
 
 const router = Router();
 
@@ -22,6 +22,7 @@ router.post("/:uid/documents",isAuth,uploadDocuments.fields([
   {name:"estadoDeCuenta", maxCount:1},
 ]), UsersControl.uploadUserDocuments)
 
+router.put("/premim/:uid", checkRole(["admin"]), UsersControl.modifyRole);
 
 router.post("/login", passport.authenticate("loginLocalStrategy", {
   session:false,

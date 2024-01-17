@@ -52,6 +52,28 @@ static redirectProfile = (req, res) => {
   
   };
 
+  static modifyRole = async(req,res) => {
+    try {
+      const userId = req.params.uid;
+      const user = await UsersService.getUsersById(userId);
+      console.log(user);
+
+      // validar que el usuario haya subido todos los documentos
+      if (user.status !== "completo") {
+        return res.json({status:"error", message: "el usuario no ha subido todos los documentos"});
+
+      }
+      if (user.role === "premium") {
+        user.role = "user";
+      }else if(user.role === "user"){
+        user.role = "premium"
+      }else{
+        res.json({status:"error", message:"No se puede cambiar el role del usuario"});
+      }
+    } catch (error) {
+      res.json({status:"error", message:error.message});
+    }
+  }
 
   static failLogin = (req, res) => {
     res.render("login", { error: "No se pudo iniciar sesion para el usuario" });
