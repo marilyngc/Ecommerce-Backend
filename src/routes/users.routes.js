@@ -1,7 +1,8 @@
 import { Router } from "express";
 import passport from "passport" 
 import { UsersControl } from "../controller/users.controller.js";
-
+import { uploadDocuments, uploadProfile } from "../utils.js";
+import { isAuth } from "../middlewares/auth.js";
 
 const router = Router();
 
@@ -10,10 +11,16 @@ const router = Router();
 // no ejecutamos los metodos del controlador (loginUse()) solo loginUse
 
 
-router.post("/signup", passport.authenticate("signupLocalStrategy",{
+router.post("/signup",uploadProfile.single("avatar"), passport.authenticate("signupLocalStrategy",{
   session:false,
   failureRedirect:"/api/users/fail-signup"
 }), UsersControl.redirectLogin);
+
+router.post("/:uid/documents",isAuth,uploadDocuments.fields([
+  {name:"identification", maxCount:1},
+  {name:"domicilio", maxCount:1},
+  {name:"estadoDeCuenta", maxCount:1},
+]), UsersControl.uploadUserDocuments)
 
 
 router.post("/login", passport.authenticate("loginLocalStrategy", {

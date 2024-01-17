@@ -2,6 +2,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+import multer from "multer";
+
+
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { config } from './config/config.js';
@@ -81,3 +84,88 @@ console.log("authHeader", authHeader);
  
     
 };
+
+
+// MULTER
+// validar los campos obligatorios
+const checkValidFields = (user)=> {
+    const {first_name,email,password} =  user;
+    if (!first_name|| !email || !password) {
+        return false
+    }else{
+        return true
+    }
+};
+//filtros para subir las imagnes de usuarios
+const profileFilterMulter = (req,file,callback) => {
+    if (!checkValidFields(req.body)) {
+        callback(null,false); // lo utilizamos para cuando multer haga filtros y que multer no suba las fotos
+
+    }else{
+        callback(null,true); // multer sube las imagenes
+    }
+};
+
+
+// configrar multer para guardar las imagenes de los usuarios
+
+// donde se guarda las imagenes
+const profileStorage = multer.diskStorage({
+    // donde vamos a guardar las iamgenes
+    destination: function(req,file,callback){
+        callback(null,path.join(__dirname,"/multer/users/img"))
+    },
+
+    // con que nombre vamos a guardar la imagen
+    filename: function(req,file,callback){
+        callback(null, `${req.body.email}-perfil-${file.originalname}`)
+    }
+});
+
+
+// creamos el uploader de las imagenes de perfil
+const uploadProfile = multer({storage:profileStorage});
+
+
+
+// configrar multer para guardar los documentos de los usuarios
+
+// donde se guarda las imagenes
+const documentStorage = multer.diskStorage({
+    // donde vamos a guardar las iamgenes
+    destination: function(req,file,callback){
+        callback(null,path.join(__dirname,"/multer/users/documents"))
+    },
+
+    // con que nombre vamos a guardar la imagen
+    filename: function(req,file,callback){
+        callback(null, `${req.body.email}-documents-${file.originalname}`)
+    }
+});
+
+
+// creamos el uploader de las imagenes de perfil
+const uploadDocuments = multer({storage:documentStorage, fileFilter:profileFilterMulter});
+
+
+
+// configrar multer para guardar las imagenes de los productos 
+
+// donde se guarda las imagenes
+const imgProductsStorage = multer.diskStorage({
+    // donde vamos a guardar las iamgenes
+    destination: function(req,file,callback){
+        callback(null,path.join(__dirname,"/multer/products/img"))
+    },
+
+    // con que nombre vamos a guardar la imagen
+    filename: function(req,file,callback){
+        callback(null, `${req.body.code}-products-${file.originalname}`)
+    }
+});
+
+
+// creamos el uploader de las imagenes de perfil
+const uploadProducts = multer({storage:imgProductsStorage });
+
+export {uploadDocuments,uploadProfile, uploadProducts};

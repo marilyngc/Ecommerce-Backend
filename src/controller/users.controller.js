@@ -10,7 +10,7 @@ export class UsersControl {
   // usamos static para poder llamarlos directamente para no crear una instancia
 static redirectProfile = (req, res) => {
   try {
-      // console.log("login-user", req.user);
+      console.log("login-user", req.user);
 
       //generamos el token del usuario
       const token = generateToken(req.user);
@@ -20,6 +20,7 @@ static redirectProfile = (req, res) => {
       return res
           .cookie("cookieToken", token,{httpOnly:true, secure: true})
           .json({ status: "success", message: "login exitoso" });
+          
   } catch (error) {
       console.error("Error al generar el token:", error);
       return res.status(500).json({ status: "error", message: "Error al generar el token" });
@@ -65,17 +66,15 @@ static redirectProfile = (req, res) => {
   };
 
   static getLogout = async (req, res) => {
-    try {
-      req.session.destroy((error) => {
-        if (error) {
-          return res.render("profile", { error: "can't log out" });
-        } else {
-          res.redirect("/login");
-        }
-      });
-    } catch (error) {
-      res.json({status:"error",message:error.message})
-    }
+   console.log(req.user);
+   const user ={ ...req.user}; // hacemos una copia
+   user.last_connection = new Date();
+   await UsersService.updateUser(user._id, user); // actualizamos el tiempo
+
+   // cerramos session
+   req.session.destroy((error)=>{
+    res.send("session finalizada");
+   });
   };
 
 
@@ -133,4 +132,53 @@ static redirectProfile = (req, res) => {
     }
   }
   
+
+  static uploadUserDocuments = async (req,res)=> {
+    try {
+      const userId = req.params.uid;
+      const user = await UsersService.getUsersById(userId);
+      console.log("documentos,", req.files);
+      // variables para guardar los objetos
+      const identification= req.files["identification"] ?.[0] || null;
+      const domicilio= req.files["domicilio"] ?.[0] || null;
+      const estadoDeCuenta= req.files["estadoDeCuenta"] ?.[0] || null;
+    
+      // guardamos todos los objetos
+      const docs = []
+      if (identification) {
+        docs.push({
+          name: "identification",
+          reference: identification.filename
+        })
+      };
+      if (domicilio) {
+        docs.push({
+          name: "domicilio",
+          reference: domicilio.filename
+        })
+      };
+      if (estadoDeCuenta) {
+        docs.push({
+          name: "estadoDeCuenta",
+          reference: estadoDeCuenta.filename
+        })
+      };
+    // console.log("docs", docs);
+
+    // comprobar si se completó todos kos documentos
+    user.documents = docs;
+    if (docs.length < 3) {
+        user.status = "incompleto";
+    }else{
+      user.status = "completo";
+    }
+
+    // console.log("user", user);
+
+    await UsersService.updateUser(user._id, user);
+    res.json({status:"success", messages:"documentos actualizados"});
+    } catch (error) {
+      res.json({status:"error",message:error.message});
+    }
+  };
 }

@@ -28,7 +28,31 @@ const usersSchema = mongoose.Schema({
         //definimos los unicos roles a elegir
         enum:["user","admin","premium"],
         default:"user"
+    },
+    documents:{
+        type:[
+            {
+                name:{type:String, require:true},
+                reference:{type:String, require:true}
+            }
+        ],
+        default:[]
+    },
+    last_connection:{
+        type: Date,
+        default:null
+    },
+    status:{
+        type: String,
+        required:true,
+        enum:["pendiente","incompleto","completo"],//posibles valores
+        default: "pendiente"
+    },
+    avatar:{
+        type:String,
+        default:""
     }
+ 
 });
 
 export  const usersModel = mongoose.model(usersCollections,usersSchema);

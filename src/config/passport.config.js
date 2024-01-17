@@ -6,6 +6,7 @@ import { createHash, inValidPassword } from "../utils.js"; // Asegúrate de que 
 
 
 import { config } from "./config.js";
+import { usersDao } from "../dao/factory.js";
 
 const JWTStrategy = jwt.Strategy;
 const extractJwt = jwt.ExtractJwt; //Extraer el token (cookie,query params, body, headers)
@@ -34,7 +35,8 @@ export const initializePassport = ()=>{
                     last_name,
                     age,
                     email:username,
-                    password:createHash(password)
+                    password:createHash(password),
+                    avatar:req.file.filename
                 };
                 // console.log("usuario creado",newUser);
                 const userCreated = await UsersService.createUser(newUser);
@@ -65,6 +67,8 @@ export const initializePassport = ()=>{
                     return done(null,false);
                 }
                 //validamos que el usuario esta registrado y que la contraseña es correcta
+               user.last_connection = new Date();
+               await UsersService.updateUser(user._id, user);// actualizamos con la fecha actual
                 return done(null,user);//req.user
             } catch (error) {
                 return done(error);
