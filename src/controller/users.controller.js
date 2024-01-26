@@ -10,7 +10,7 @@ export class UsersControl {
   // usamos static para poder llamarlos directamente para no crear una instancia
 static redirectProfile = (req, res) => {
   try {
-      console.log("login-user", req.user);
+      // console.log("login-user", req.user);
 
       //generamos el token del usuario
       const token = generateToken(req.user);
@@ -56,7 +56,7 @@ static redirectProfile = (req, res) => {
     try {
       const userId = req.params.uid;
       const user = await UsersService.getUsersById(userId);
-      console.log(user);
+      // console.log(user);
 
       // validar que el usuario haya subido todos los documentos
       if (user.status !== "completo") {

@@ -1,5 +1,4 @@
-import jwt from "jsonwebtoken";
-import {config} from "../config/config.js";
+
 
 export const isAuth = (req,res,next) => {
     if (!req.user) {

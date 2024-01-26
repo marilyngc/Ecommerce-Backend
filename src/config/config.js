@@ -21,7 +21,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // aqui le decimos que .env utilizar
 const pathEnv = envMode === "production"
 ? path.join(__dirname,"../../.env.production")
-: path.join(__dirname,"../../.env.development");
+: path.join(__dirname,"../../.env");
 
 dotenv.config({
     path:pathEnv  // archivos que vamos a usar (production o development)
