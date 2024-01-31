@@ -36,15 +36,16 @@ export const generateToken = (user) => {
     return token;
 };
 
-
+console.log("generatetoken",generateToken);
 // validar token
 export const validateToken = (req,res,next) => {
     // lo vemos en el headers de postMan
-    // console.log("req.headers",req.headers)
+    console.log("req.headers",req.headers)
     
-    const authHeader = req.headers["Authorization"];
+    const authHeader = req.get("Authorization");
 
-    // console.log("headers",authHeader);
+
+    console.log("headers",authHeader);
 
     // token
     let token = null;
@@ -55,7 +56,9 @@ console.log("authHeader", authHeader);
         }
 
     // comprobamos si se recibió un header ("Bearer <token>")
-    if (!authHeader) return res.sendStatus(401).json({error:"authHeader missing  or invalid"});
+if (!authHeader) {
+    return res.status(401).json({ error: "authHeader missing or invalid" });
+}
 
     //se hace el split ya que el token viene en el header de la siguiente manera:
     // "Bearer <token>", y solo nos interesa el token
@@ -70,7 +73,11 @@ console.log("authHeader", authHeader);
     const decodedToken = jwt.verify(token,config.tokenKey.key,(err,payload) => {
         if (err) {
             console.error("Error verificando el token:", err);
-            return res.sendStatus(403)};
+            // return res.sendStatus(401)
+               // Continuar con la ejecución incluso si hay un error en la verificación del token
+               req.user = null; // O podrías establecer req.user en algo que indique que no hay un usuario válido
+        }
+            ;
             console.log(config.tokenKey.key)
         req.user = payload;
         next();
@@ -79,7 +86,7 @@ console.log("authHeader", authHeader);
     });   
     console.log(decodedToken);
      // si el token está vacio
-     if (!token || decodedToken.id) return res.sendStatus(401).json({error:"authHeader missing  or invalid"});
+     if (!token || !decodedToken.id) return res.sendStatus(401).json({error:"authHeader missing  or invalid"});
 
  
     

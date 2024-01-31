@@ -15,14 +15,14 @@ static redirectProfile = (req, res) => {
       //generamos el token del usuario
       const token = generateToken(req.user);
      
-      
+      // console.log("token en controll", token);
       //enviamos el token al cliente
       return res
           .cookie("cookieToken", token,{httpOnly:true, secure: true})
           .json({ status: "success", message: "login exitoso" });
           
   } catch (error) {
-      console.error("Error al generar el token:", error);
+      // console.error("Error al generar el token:", error);
       return res.status(500).json({ status: "error", message: "Error al generar el token" });
   }
 };

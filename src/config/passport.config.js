@@ -83,7 +83,7 @@ export const initializePassport = ()=>{
             secretOrKey:config.tokenKey.key
         },
         async (jwtPayload,done)=>{
-            // console.log("jwtPayload",jwtPayload);
+            console.log("jwtPayload",jwtPayload);
             try {
                 return done(null,jwtPayload); //req.user = info del token
             } catch (error) {

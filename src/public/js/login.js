@@ -20,10 +20,11 @@ loginForm.addEventListener("submit", async (e,token) => {
             body: JSON.stringify(formValues),
         });
 
-        // console.log("response",response)
+        console.log("response",response)
         if (response.status === 200) {
             const result = await response.json();
             if (result.status === "success") {
+                // console.log("status succes",result.status)
                 window.location.href = "profile";
             } else {
                 errorMsg.innerHTML = "No fue posible loguear el usuario";

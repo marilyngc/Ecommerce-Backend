@@ -13,7 +13,7 @@ import cookieParser from "cookie-parser";
 import {initializePassport} from "./config/passport.config.js";
 import passport from "passport";
 import { config } from "./config/config.js";
-import {errorHandler} from "./middlewares/errorHandler.js"
+// import {errorHandler} from "./middlewares/errorHandler.js"
 
 
 import {swaggerSpecs} from "./config/swagger.config.js";
@@ -63,8 +63,9 @@ app.use(viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts",cartsRouter);
 app.use("/api/users", usersRouter);
-app.use(errorHandler);
+
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+// app.use(errorHandler);
 
 
 
