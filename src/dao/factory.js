@@ -1,62 +1,120 @@
 import { config } from "../config/config.js";
+import { __dirname } from "../utils.js";
+import path from "path";
+import { logger } from "../helpers/logger.js";
 
-
-// import { __dirname } from "../utils.js";
-
-
-import { ProductsManagerMongo } from "./managers/mongo/productsManagerMongo.js"
-import { CartsManagerMongo} from "./managers/mongo/cartsManagerMongo.js";
-import { ChatManagerMongo } from "./managers/mongo/chatManagerMongo.js";
-import { UsersManagerMongo } from "./managers/mongo/usersManagerMongo.js"
-
-// ruta de donde podemos encontrar los archivos json en local
-// const productsUrl = path.join(__dirname,"/files/products.json");
-// const cartsUrl = path.join(__dirname,"/files/carts.json");
-
-// aqi podemos acceder a los modelos
-// export const productsDao = new  ProductsManagerMongo();
-// export const cartsDao = new  CartsManagerMongo();
-// export const chatDao = new ChatManagerMongo();
-// export const usersDao = new UsersManagerMongo();
-
-let usersDao;
 let productsDao;
 let cartsDao;
-const persistence = config.server.persistence
+let chatDao;
+let usersSessionsDao;
+let ticketDao;
 
-switch (persistence) {
-    //primer caso
-    case "memory":{
-          //importamos la clase
-          const {UsersManagerMemory} = await import("./managers/memory/");
+const enviroment = config.enviroment.persistence;
 
-          // asignamos una nueva instancia a base de la clase
-          usersDao = new UsersManagerMemory();
-          break;
-    }
-      
+switch (enviroment) {
+  case "development": {
+    //Mongo DB
+    const { connectDB } = await import("../config/dbConnection.js");
+    connectDB.getInstance();
 
-        //segundo caso
-        case "mongo":{
-            const {connectDB} = await import("../config/dbConnection.js");
-            connectDB();
+    //Products
+    const { ProductsManagerMongo } = await import(
+      "../dao/managers/mongo/productsManagerMongo.js"
+    );
+    productsDao = new ProductsManagerMongo();
 
-            //importamos la clase
-            const {UsersManagerMongo} = await import("./managers/mongo/usersManagerMongo.js");
-            const {ProductsManagerMongo} = await import("./managers/mongo/productsManagerMongo.js");
-            const {CartsManagerMongo} = await import("./managers/mongo/cartsManagerMongo.js");
+    //Carts
+    const { CartsManagerMongo } = await import(
+      "../dao/managers/mongo/cartsManagerMongo.js"
+    );
+    cartsDao = new CartsManagerMongo();
 
+    //Chat
+    const { ChatManagerMongo } = await import(
+      "../dao/managers/mongo/chatManagerMongo.js"
+    );
+    chatDao = new ChatManagerMongo();
 
-            //asignamos una nueva instancia a base de la clase
-            usersDao = new UsersManagerMongo();
-            productsDao = new ProductsManagerMongo();
-            cartsDao = new CartsManagerMongo();
+    //Users
+    const { UsersManagerMongo } = await import(
+      "../dao/managers/mongo/usersManagerMongo.js"
+    );
+    usersSessionsDao = new UsersManagerMongo();
 
-            break;
-           
-        }
-        default:
-       
+    //tikets
+    const { TicketManagerMongo } = await import(
+      "./managers/mongo/ticketManagerMongo.js"
+    );
+    ticketDao = new TicketManagerMongo();
+
+    logger.info("Estoy en el entorno de produccion");
+    break;
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////
+
+  case "production": {
+    ///files system
+
+    //Products
+    const { ProductManagerFs } = await import(
+      "./managers/fileSystemManagers/productManagerFs.js"
+    );
+    productsDao = new ProductManagerFs(
+      path.join(
+        __dirname,
+        "/dao/managers/fileSystemManagers/files/products.json"
+      )
+    );
+
+    //Carts
+    const { CartsManagerFs } = await import(
+      "./managers/fileSystemManagers/cartsManagerFs.js"
+    );
+    cartsDao = new CartsManagerFs(
+      path.join(__dirname, "/dao/managers/fileSystemManagers/files/carts.json")
+    );
+
+    logger.info("Estoy en el entorno de desarrollo");
+    break;
+  }
+
+  case "test": {
+    const { connectDB } = await import("../config/dbConnection.js");
+    connectDB.getInstance();
+
+    //Products
+    const { ProductsManagerMongo } = await import(
+      "../dao/managers/mongo/productsManagerMongo.js"
+    );
+    productsDao = new ProductsManagerMongo();
+
+    //Carts
+    const { CartsManagerMongo } = await import(
+      "../dao/managers/mongo/cartsManagerMongo.js"
+    );
+    cartsDao = new CartsManagerMongo();
+
+    //Chat
+    const { ChatManagerMongo } = await import(
+      "../dao/managers/mongo/chatManagerMongo.js"
+    );
+    chatDao = new ChatManagerMongo();
+
+    //Users
+    const { UsersManagerMongo } = await import(
+      "../dao/managers/mongo/usersManagerMongo.js"
+    );
+    usersSessionsDao = new UsersManagerMongo();
+
+    //tikets
+    const { TicketManagerMongo } = await import(
+      "./managers/mongo/ticketManagerMongo.js"
+    );
+    ticketDao = new TicketManagerMongo();
+
+    logger.info("Estoy en el entorno de pruebas");
+    break;
+  }
 }
 
-export {usersDao,productsDao,cartsDao}
+export { productsDao, cartsDao, chatDao, usersSessionsDao, ticketDao };

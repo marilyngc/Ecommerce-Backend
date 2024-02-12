@@ -1,50 +1,43 @@
 import { config } from "../config/config.js";
-import pkg from 'jsonwebtoken';
-// import { jwt } from "jsonwebtoken";
-import { transporter } from "../config/email.js";
+import jwt from "jsonwebtoken";
+import { transporter } from "../config/gmailMailling.js";
+import { logger } from "./logger.js";
 
-const { jwt } = pkg;
+export const generateEmailToken = (email, expireTime) => {
+    const token = jwt.sign({email}, config.gmail.secretToken, { expiresIn: expireTime} )
+    return token
+}
 
-export const generateEmailToken = (email,expireTime) => {
-    //generamos token
-    const token = jwt.sign({email},config.gmail.token,{expiresIn:expireTime});
-    return token;
-};
-
-
-export const sendChangePasswordEmail = async (req,userEmail,token) => {
-    // enlace que le enviamos al usuario
-    const domain = `${req.protocol}://${req.get('host')}`;// crea la ruta base
-    const link =`${domain}/reset-password?token=${token}`;// enlace con el token
-
-    // enviamos correo con enlace
-    await transporter.sendMail({
+export const sendChangePasswordEmail = async(req, userEmail, token)=>{
     
-        from:"ecoomerce pepito",
-        to:userEmail,
-        //asunto
-        subject:"restablecer contraseña",
-        html:`
-        <div> 
-        <h2> Hola!!  </h2>
-        <p> Solicitaste restablecer contraseña, da click en el siguiente boton </p>
-        <a href="${link}">  
-          <button>
-              restablecer contraseña
-          </button>
-        </a>
-        </div>`
-    })
-};
+        const domain = `${req.protocol}://${req.get('host')}`;
+        const link = `${domain}/reset-password?token=${token}`;//enlace con el token
+    
+        //envio correo con enlace
+        await transporter.sendMail({
+            from: 'Ecommerce',
+            to: userEmail,
+            subject: 'Restablecer contraseña',
+            html: `<div>
+                <h2>Hola!</h2>
+                <p >Solicitaste Restablecer tu contraseña, 
+                da click en el siguiente enlace</p>
+                <a href="${link}">
+                <button>Restablecer Contraseña</button>
+                </a>
+            </div>`
+        })
 
+}
 
-//validar token
-export const verifyEmailToken = async (token) => {
-  try {
-      //extraemos la informacion
-      const info = jwt.verify(token,config.gmail.token);
-      return info.email;
-  } catch (error) {
-    return null;
-  }
-};
+export const verifyEmailToken = (token)=>{
+    try {
+        const infoToken = jwt.verify(token, config.gmail.secretToken)
+        console.log('infoToken', infoToken)
+        return infoToken.email
+    } catch (error) {
+        console.log(error.message)
+        return null
+        
+    }
+}

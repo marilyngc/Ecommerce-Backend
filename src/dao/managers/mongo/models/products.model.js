@@ -1,51 +1,44 @@
-import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-// creamos la coleccion 
- const  productsCollection = "products";
+const productsCollection = 'products';
 
+const productSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    code: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    thumbnail: {
+        type: [],
+    },
 
- // creamos esquema
- const productSchema = new mongoose.Schema({
-    
-		title: {
-            type:String,
-            require:true,
-        },
-        
-		description: {
-            type:String,
-            require:true,
-        },
-		price:{
-            type:Number,
-            require:true,
-        },
-        
-            code:{
-                type:String,
-                require:true,
-                unique:true
-            },
-      
-		thumbnail: {
-            type:String,
-           
-        },
-        category:{
-            type:String,
-            require:true,
-            enum:["Clothe","technology","sports"]
-        },
-		stock:{
-            type:Number,
-            require:true,
-        } 
-	
- });
+    stock: {
+        type: Number,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ['conjunto', 'bombis', 'body']
+    },
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+    }
 
-// el modelo nos sirve para realizar operaciones sobre la coleccion users
-
-
+})
 productSchema.plugin(mongoosePaginate);
- export const productsModel = mongoose.model(productsCollection,productSchema);
+export const productsModel = mongoose.model(productsCollection, productSchema);

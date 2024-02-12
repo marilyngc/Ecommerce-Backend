@@ -1,117 +1,141 @@
 import passport from "passport";
+import LocalStrategy from "passport-local";
+import GithubStrategy from "passport-github2";
 import jwt from "passport-jwt";
-import LocalStrategy from "passport-local"
-import {UsersService } from "../service/users.service.js";
-import { createHash, inValidPassword } from "../utils.js"; // Asegúrate de que la ruta sea correcta
-
-
 import { config } from "./config.js";
+import { createHash, isValidPassword, cookieExtractor } from "../utils.js";
+import { usersSessionsService } from "../repositories/index.js";
+
+//variables para jwt
+const JwtStrategy = jwt.Strategy;
+const extractJwt = jwt.ExtractJwt;
 
 
-const JWTStrategy = jwt.Strategy;
-const extractJwt = jwt.ExtractJwt; //Extraer el token (cookie,query params, body, headers)
+export const initializePassport = () => {
 
-export const initializePassport = ()=>{
-    //Estrategia para registrar a los usuarios
-    passport.use("signupLocalStrategy", new LocalStrategy(
+    //estrategia para registro local
+    passport.use('registerLocalStrategy', new LocalStrategy(
         {
-            passReqToCallback:true,
-            usernameField:"email", //ahora el campo username es igual al campo email
+            //me permite acceder con los datos del usuario
+            passReqToCallback: true,
+            usernameField: 'email',//username ahora es igual email
         },
-        async (req,username,password,done )=>{
-           
-            const {first_name,last_name,age} = req.body;
-         
+        async(req, username, password, done) =>{
+
+            const {first_name, last_name, age} = req.body
+            //console.log('req.file', req.file)
             try {
-                const user = await UsersService.getUserByEmail(username);
-                // console.log("userNew", user)
-                if(user){
-                    //el usuario ya esta registrado
-    // El usuario ya está registrado, lanza un error
-    throw new Error('El usuario ya está registrado.');                }
-                //El usuario no esta registrado
+                //console.log("paso por Passport registerLocalStrategy");
+                //busco el usuario por email
+                const user = await usersSessionsService.getUserByEmail(username)
+                //console.log('Usuario local', user)
+                
+                if(user){//null: que no hubo error, false: ya existe, un mensaje
+                    //el usuario ya existe
+                    return done(null, false)
+                }
+
+                //el usuario no existe, creo el usuario, y al password la hasheo antes de guardarlo
                 const newUser = {
                     first_name,
                     last_name,
                     age,
-                    email:username,
-                    password:createHash(password),
-                    avatar:req.file.filename
-                };
-                // console.log("usuario creado",newUser);
-                const userCreated = await UsersService.createUser(newUser);
-                // console.log("usuario creado", userCreated)
-                    // El done (hubo errores?, nuevo user)
-                return done(null,userCreated);
-            } catch (error) {
+                    email: username,
+                    password: createHash(password),
+                    role: 'user',
+                    avatar: req.file.filename
+                }
+                console.log(newUser)
+                //creo un nuevo usuario
+                const userCreated = await usersSessionsService.createUsers(newUser)
                
-                return done(error);
+                return done(null, userCreated)
+            } catch (error) {
+                return done(error, {message: 'Error al crear el usuario'})
             }
         }
-    ));
+    
+    ))
 
-    //Estrategia para login a los usuarios
-    passport.use("loginLocalStrategy", new LocalStrategy(
+    //estrategia para login local
+    passport.use('loginLocalStrategy', new LocalStrategy(
         {
-            usernameField:"email", //ahora el campo username es igual al campo email
+            usernameField: 'email',//username ahora es igual email
         },
-        async (username,password,done)=>{
+        async (username, password, done) => {
             try {
-                const user = await UsersService.getUserByEmail(username);
-                // console.log("userEmail", user)
-                if(!user){
-                    //el usuario no esta registrado
-                    return done(null,false);
+                //console.log("paso por Passport loginLocalStrategy");
+                //busco el usuario por email
+                const user = await usersSessionsService.getUserByEmail(username);
+                //al revez del registro
+                if (!user) {
+                //el usuario no esta registrado
+                    return done(null, false)//usuario no esta registrado
                 }
-                if(!inValidPassword(password,user)){
-                    return done(null,false);
+                if (!isValidPassword(password, user)) {
+                    return done(null, false);//{ message: 'Credenciales invalidas' }
                 }
-                //validamos que el usuario esta registrado y que la contraseña es correcta
-               user.last_connection = new Date();
-               await UsersService.updateUser(user._id, user);// actualizamos con la fecha actual
-                return done(null,user);//req.user
+                //si todo esta ok(null), creo la session del usuario(user)
+                user.last_connection = new Date();
+                await usersSessionsService.updateUser(user._id, user);
+                return done(null, user);//pase por la serealizacion
             } catch (error) {
                 return done(error);
             }
         }
     ));
 
-    passport.use("jwtAuth", new JWTStrategy(
+    //estrategia para registro con github
+    passport.use('registerGithubStrategy', new GithubStrategy(
         {
-            //Extraer la informacion del token
-            jwtFromRequest:extractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey:config.tokenKey.key
+            clientID: config.github.clientId ,
+            clientSecret: config.github.clientSecret,
+            callbackURL: config.github.callbackUrl
         },
-        async (jwtPayload,done)=>{
-            console.log("jwtPayload",jwtPayload);
+        async (accessToken, refreshToken, profile, done) => {
             try {
-                return done(null,jwtPayload); //req.user = info del token
+                //console.log("paso por Passport registerGithubStrategy");
+                //console.log('Perfil', profile)
+                const createEmail = profile.email || `${profile.username}@github.com`;
+                const user = await usersSessionsService.getUserByEmail(createEmail)
+            
+                if(user){
+                    return done(null, user)
+                }
+                const newUser = {
+                    first_name: profile._json.name,
+                    last_name: profile.username,
+                    age: 0,
+                    email: createEmail,
+                    password: createHash(profile.id),
+                    role: 'user'
+                }
+                
+               // console.log(newUser)
+                const userCreated = await usersSessionsService.createUsers(newUser)
+                return done(null, userCreated)
             } catch (error) {
-                return done(error);
+                return done(error)
             }
         }
-    ));
-};
-
-//funcion para extraer el token de la cookie
-export const cookieExtractor = (req)=>{
-    let token;
-    console.log("cookieExtractor",req.cookies)
-    if(req && req.cookies){ //req?.cookies
-        
-        token = req.cookies["cookieToken"];
-    } else {
-        token = null;
-    }
-    return token;
-};
+    ))
 
 
-passport.serializeUser((user,done)=>{
-    done(null, user._id);
-});
+    //Estrategia JWT
+    passport.use('jwtAuth', new JwtStrategy(
+        {
+            //Extraigo la info del token
+            jwtFromRequest: extractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: config.tokenJWT.tokenJWT_Key
+        },
+        async (jwtPayload, done) =>{
+            try{
+                //console.log("paso por Passport jwtAuth");
+                return done(null, jwtPayload)
+            } catch(error){
+                return done(error)
+            }
+        }
+    ))
 
-passport.deserializeUser(async(id,done)=>{
-    const user = await UsersService.getUserById(id);
-    done(null,user);//req.user = informacion del usuario que traemos de la base de datos
-});
+}

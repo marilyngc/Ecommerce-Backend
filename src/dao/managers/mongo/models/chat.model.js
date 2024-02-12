@@ -1,18 +1,16 @@
 import mongoose from "mongoose";
 
-const chatCollection = "chat";
-
+const chatCollection = 'chat';
 
 const chatSchema = new mongoose.Schema({
-    user:{
-        type:String,
-        require:true,
-        unique:true
+    user: {
+        type: String,
+        required: true,
     },
-    message:{
-        type:String,
-        require:true
+    message: {
+        type: String,
+        required: true
     }
-});
+})
 
-export const chatModel = mongoose.model(chatCollection,chatSchema);
+export const chatModel = mongoose.model(chatCollection, chatSchema);

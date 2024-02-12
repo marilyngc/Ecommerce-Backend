@@ -1,55 +1,17 @@
-import { Router } from "express";
-import passport from "passport" 
-import { UsersControl } from "../controller/users.controller.js";
-import { uploadDocuments, uploadProfile } from "../utils.js";
-import { checkRole, isAuth } from "../middlewares/auth.js";
+import {Router} from 'express';
+import { authorization, jwtAuth } from '../middlewares/auth.js';
+import { UsersController } from '../controller/users.controller.js';
+import { uploadDocuments } from '../utils.js';
 
 const router = Router();
+//El admin debe estar logueado y colocar un id de usuario en la ruta 
+//localhost:8080/api/users/premium/:uid
+router.put('/premium/:uid',jwtAuth, authorization(['admin']), UsersController.modifyRole)
 
+router.post('/:uid/documents',jwtAuth, authorization(['user']), uploadDocuments.fields([
+    {name: 'identificacion', maxCount: 1},
+    {name: 'domicilio', maxCount: 1},
+    {name: 'estadoDeCuenta', maxCount: 1},
+]), UsersController.uploaderUserDocuments)
 
-
-// no ejecutamos los metodos del controlador (loginUse()) solo loginUse
-
-
-router.post("/signup",uploadProfile.single("avatar"), passport.authenticate("signupLocalStrategy",{
-  session:false,
-  failureRedirect:"/api/users/fail-signup"
-}), UsersControl.redirectLogin);
-
-router.post("/:uid/documents",isAuth,uploadDocuments.fields([
-  {name:"identification", maxCount:1},
-  {name:"domicilio", maxCount:1},
-  {name:"estadoDeCuenta", maxCount:1},
-]), UsersControl.uploadUserDocuments)
-
-router.put("/premim/:uid", checkRole(["admin"]), UsersControl.modifyRole);
-
-router.post("/login", passport.authenticate("loginLocalStrategy", {
-  session:false,
-  failureRedirect:"/api/users/fail-login"
-}), UsersControl.redirectProfile);
-
-router.get("/fail-login",UsersControl.failLogin);
-
-
-
-
-router.post("/profile", passport.authenticate("jwtAuth",{session:false,
-  failureRedirect:"/api/users/fail-auth"
-}),UsersControl.getProfile);
-// por defecto passport usa session. le indicamos que no vamos a usar session con {session:false} 
-
-
-
-
-router.get("/fail-signup", UsersControl.failSignup);
-
-
-router.get("/fail-auth",UsersControl.failAuth);
-
-router.get("/logout", UsersControl.getLogout);
-
-router.post("/forgot-password",UsersControl.forgotPassword);
-router.post("/reset-password?token",UsersControl.resetPassword)
-
-export { router as usersRouter };
+export {router as usersRouter}

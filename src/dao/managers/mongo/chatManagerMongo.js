@@ -1,28 +1,31 @@
+import { logger } from "../../../helpers/logger.js";
 import { chatModel } from "./models/chat.model.js";
 
-export class ChatManagerMongo{
+export class ChatManagerMongo {
+
     constructor(){
-        this.model = chatModel;
+        this.model = chatModel
     }
 
-    async getMessages() {
+    async getMessages(){
         try {
-            const result = await this.model.find();
-            return result;
+            const resultado = await this.model.find();
+            return resultado 
         } catch (error) {
-            console.log("getMessages", error.message);
-            throw new Error("No se pudo obtener el listado de mesanjes");
+            logger.error('get chat', error.message);
+            throw new Error('No se pudo obtener el listadp de los mensajes ', error.message);
         }
-    };
-
-
-    async addMessage(message){
-try {
-    const result = await this.model.create(message);
-    return result
-} catch (error) {
-    console.log("getMessages", error.message);
-    
-}
     }
+
+    async createMessage(messageInfo){
+        try {
+            const resultado = await this.model.create(messageInfo);
+            return resultado
+        } catch (error) {
+            logger.error('add message', error.message);
+            throw new Error('No se pudo agragar el mensaje ', error.message);
+        }
+    }
+
+
 }

@@ -1,52 +1,45 @@
-import dotenv from "dotenv";
-import path from 'path';
-import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import { Command } from 'commander';
 
-import {Command} from "commander";
-
-
+dotenv.config()
 const program = new Command();
 
-//especificamos los argumentos
 program
-.option("--mode <modo>","entorno de trabajo","development");
-program.parse();
-const args = program.opts(); //valores de los argumentos
-console.log("arg", args);
-const envMode = args.mode; // recibe valor de development o producción
+    .option('--port <port>', 'Puerto de ejecucion', '3000')
+    .option('--mode <mode>', 'Entorno de desarrollo', 'development')
+    .option('--mode <mode>', 'Entorno de prueba', 'test')
+    .parse();
 
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// aqui le decimos que .env utilizar
-const pathEnv = envMode === "production"
-? path.join(__dirname,"../../.env.production")
-: path.join(__dirname,"../../.env");
-
-dotenv.config({
-    path:pathEnv  // archivos que vamos a usar (production o development)
-
-}); // process.env
-
+const persistenceMode = program.opts().mode;
+const port = program.opts().port;
 
 export const config = {
-   server:{
-    env:process.env.NODE_EMVIRONMENT || "development",
-    port:process.env.PORT,
-     persistence: process.env.PERSISTENCE
-   },
-    // dirrecion de mongoDB
-    mongo:{
-        url:process.env.MONGO_URL
+
+    server: {
+        port: port,
     },
 
-    tokenKey:{
-        key:process.env.PRIVATE_KEY
+    mongo: {
+        url: process.env.MONGO_URL,
+        url_test: process.env.MONGO_URL_TEST
     },
-    gmail:{
-        account: process.env.ADMIN_EMAIL,
-        password: process.env.ADMIN_PASS,
-        token: process.env.TOKEN_EMAIL
+
+    tokenJWT: {
+      tokenJWT_Key: process.env.PRIVATE_KEY,  
+    },
+    
+    github: {
+        callbackUrl: process.env.GITHUB_CALLBACK_URL,
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    },
+    gmail: {
+        account: process.env.GMAIL_ACCOUNT,
+        password: process.env.GMAIL_PASSWORD,
+        secretToken: process.env.TOKEN_EMAIL
+    },
+    enviroment: {
+        persistence: persistenceMode,
     }
 }
-
+//console.log('config', config)

@@ -1,85 +1,107 @@
-import { productsModel } from "./models/products.model.js";
-import { CustomError } from "../../../service/errors/customError.service.js";
-import { Eerror } from "../../../enum/Eerror.js";
+import { logger } from '../../../helpers/logger.js';
+import { productsModel } from './models/products.model.js';
 
-export class ProductsManagerMongo {
-  constructor() {
-    this.model = productsModel;
-  }
+export class ProductsManagerMongo{
 
-  async createProduct(productInfo) {
-    try {
-      const result = await this.model.create(productInfo);
-      return result;
-    } catch (error) {
-      // throw new Error("No se pudo crear el producto");
-      CustomError.createError({
-        name:"Create product error",
-        cause:error.message,
-        message:"Datos invalidos para crear el producto",
-        errorCode: Eerror.INVALID_BODY_JSON
-      })
+    constructor(){
+        this.model = productsModel
     }
-  }
 
-  async getProduct() {
-    try {
-      // lean() es para convertir a archivo  json para ser leido por la plnatilla de handlebars
-      const result = await this.model.find().lean();
-      console.log(result)
-      return result;
-    } catch (error) {
-      throw new Error("No se pudo capturar los productos");
+    //metodo para obtener productos del paginate
+    async getProductsPaginate(query, options){
+        try {
+            logger.info('paso por manager getProductsPaginate');
+            const result = await this.model.paginate(query, options);
+           
+            return result
+        } catch (error) {
+            logger.error('error en manager getProductsPaginate: ', { message: error.message});
+            throw new Error('No se pudo obtener el listado de  producto',error.message);
+        }
     }
-  };
-  async getProductsPaginate(query, options) {
-    try {
-      const result = await this.model.paginate(
-        {},
-        {query,
-          options
-    }
-      );
-      return result;
-    } catch (error) {
-      throw new Error("No se pudo capturar los productos");
-    }
-  };
-  async addProducts(objetArray) {}
-  async getProductsById(id) {
-    try {
-      const result = await this.model.findById(id).lean();
-      return result;
-    } catch (error) {
-      throw new Error("No se pudo encontrar el producto solicitado");
-    }
-  }
-  async updateProduct(id, newProductInfo) {
-    try {
-      // const result = await this.model.updateOne({_id:id},newProductInfo);
-      const result = await this.model.findByIdAndUpdate(id, newProductInfo, {
-        new: true,
-      });
-      if (!result) {
-        throw new Error("No se pudo encontrar el producto a actualizar");
-      }
-      return result;
-    } catch (error) {
-      throw new Error("No se pudo actualizar los productos");
-    }
-  }
-  async deleteProduct(id) {
-    try {
-     
-      const result = await this.model.findByIdAndDelete(id);
 
-  
-      if (!result) {
-      throw new Error("No se pudo encontrar el producto a eliminar");
-      }
-      return result;
-    } catch (error) {
-      throw new Error("No se pudo eliminar el producto solicitado");
+    async createProduct(infoProduct){
+        try {
+            
+            //uso el modelo definido y el metodo de mongo
+            const resultado = await this.model.create(infoProduct);
+            logger.info('paso por manager createProduct');
+            return resultado
+        } catch (error) {
+            //mensaje interno
+            logger.error('Error en manager createProduct: ',{ message: error.message});
+            //nmensaje al cliente
+            throw new Error('No se pudo crea el producto', error.message);
+        }
     }
-  }
+    async getProducts(){
+        try {
+            //uso el modelo definido y el metodo de mongo
+            const resultado = await this.model.find().lean();//soluciona el bloqueo de handelbarspara mostrar en home
+            if(!resultado){
+                logger.error('No hay productos cargados');
+                throw new Error('No hay productos cargados');
+            }
+            logger.info('paso por manager getProducts');
+            return resultado
+        } catch (error) {
+            //mensaje interno
+            logger.error('error en manager getProducts: ', { message: error.message});
+            //nmensaje al cliente
+            throw new Error('No se pudo obtener el listado de  producto',error.message);
+        }
+    }
+    async getProductById(prodcutId){
+        try {
+           
+            //uso el modelo definido y el metodo de mongo
+            const resultado = await this.model.findById(prodcutId);//tambien se puede usar findOne({_id: id})
+            if(!resultado){
+                logger.error('No se pudo encontrar el producto');
+                throw new Error('No se pudo encontrar el producto');
+            }
+            logger.info('paso por manager getProductById');
+            return resultado
+        } catch (error) {
+            //mensaje interno
+            logger.error('error en manager getProductById: ', { message: error.message});
+            //nmensaje al cliente
+            throw new Error('No se pudo obtener el producto',error.message);
+        }
+    }
+    async updateProduct(prodcutId, newProduct){
+        try {
+            logger.info('paso por manager updateProduct');
+            //uso el modelo definido y el metodo de mongo
+            const resultado = await this.model.findOneAndUpdate({_id: prodcutId}, newProduct, {new: true});//tambien se puede usar updateOne({_id: id}, product)
+            if(!resultado){
+                logger.error('No se pudo encontrar el producto, para actualizarlo');
+                throw new Error('No se pudo encontrar el producto, para actualizarlo');
+            }
+            
+            return resultado
+        } catch (error) {
+            //mensaje interno
+            logger.error('Error en manager updateProduct: ',{ message: error.message});
+            //nmensaje al cliente
+            throw new Error('No se pudo actualizar el producto',error.message);
+        }
+    }
+    async deleteProduct(prodcutId){
+        try {
+            //uso el modelo definido y el metodo de mongo
+            const resultado = await this.model.findByIdAndDelete(prodcutId);//tambien se puede usar deleteOne({_id: id})
+            if(!resultado){
+                logger.error('No se pudo encontrar el producto a eliminar');
+                throw new Error('No se pudo encontrar el producto a eliminar');
+            }
+            logger.info('paso por manager deleteProduct');
+            return resultado
+        } catch (error) {
+            //mensaje interno
+            logger.error('Error en manager deleteProduct: ', { message: error.message});
+            //nmensaje al cliente
+            throw new Error('No se pudo encontrar el producto, para actualizarlo',error.message);
+        }
+    }
 }

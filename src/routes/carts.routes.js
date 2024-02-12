@@ -1,24 +1,38 @@
-import { Router } from "express";
-import { CartsController } from "../controller/carts.controller.js";
-import {checkRole, isAuth} from "../middlewares/auth.js"
+import { Router } from 'express';
+import { CartsController } from '../controller/carts.controller.js';
+import { authorization, jwtAuth} from '../middlewares/auth.js';
 
 
-const router = Router();
+const router = Router()
 
-router.use(function (req, res, next) {
-  console.log("petición recibida");
-  next();
-});
+//http://localhost:8080/api/carts
+router.get("/", CartsController.getCarts)
+  
+  http://localhost:8080/api/carts/cid para obtener el carrito por ID
+  router.get("/:cid", CartsController.getCartsId)
+  
+  http://localhost:8080/api/carts para craer carritos vacios
+  router.post("/", CartsController.createCart)
 
-// verificamos que funciona la ruta de app.js
-router.get("/", CartsController.getCart);
+    http://localhost:8080/api/carts/:cid//ruta para actualizar por id el carrito completo
+  router.put("/:cid", CartsController.updateCartId)
+  
+  //http://localhost:8080/api/carts/:cid/product/:pid para agregar productos al carrito
+  router.put("/:cid/product/:pid", jwtAuth, authorization(['user', 'admin']),CartsController.addProduct) 
 
-router.get("/:cid", CartsController.getCartById);
+  
+  //http://localhost:8080/api/carts/:cid/products/:pid //ruta que actualiza el produto del carrito por su id
+  router.put("/:cid/products/:pid", CartsController.updateProductInCart)
+  
+//http://localhost:8080/api/carts/:cid
+  router.delete("/:cid", CartsController.deleteCartId)
 
-router.post("/", CartsController.postCart);
+//http://localhost:8080/api/carts/:cid/products/:pid   // Ruta para eliminar un producto específico de un carrito por su ID de carrito y producto
+  router.delete("/:cid/products/:pid",jwtAuth, authorization(['user']), CartsController.deleteProductInCart)
 
-router.post("/:cid/product/:pid", CartsController.postCartProductId);
-router.delete("/:cid/product/:pid", CartsController.deleteCartProductId);
-router.put("/:cid/product/:pid",CartsController.putCartProductId );
-router.post("/:cid:purchase",isAuth,checkRole(["user","premium"]), CartsController.purcharseCart); 
-export { router as cartsRouter };
+//------------------- Ruta para crear un tiket
+router.post('/:cid/purchase',jwtAuth, authorization(['user']), CartsController.purchaseCart)
+
+
+
+export { router as cartsRouter}

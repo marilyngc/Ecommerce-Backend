@@ -1,59 +1,53 @@
+console.log('JavaScript del lado del front');
+
+// socket del lado del cliente
 const socketClient = io();
-const userName = document.getElementById("userName");
-const inputMsg = document.getElementById("inputMsg");
-const sendMsg = document.getElementById("sendMsg");
-const chatPanel = document.getElementById("chatPanel");
-
-let user; // variable de identidad del usuario
 
 
-swal.fire({ // => es una promesa
-    title: "Bienvenidos",
-    text: "Por favor, ingresa tu nombre de usuario",
-    input:"text",
-    // validamos los datos ingresados
-    inputValidator:(value) => {
-        return !value && "No ingresaste tu nombre de usuario"
+const userName = document.getElementById('userName');//quien se conecta 
+const inputMessage = document.getElementById('inputMessage');//recibir el mje del usuario
+const btnSendMessage = document.getElementById('btnSendMessage');//capturar el evento y enviar mensaje
+const chatPanel = document.getElementById('chatPanel');//recibo todos los mjes
+
+let user;
+
+Swal.fire({
+    title: 'Chat',
+    text: 'Por favor ingrese su nombre de usuario',
+    input: 'text',
+    inputValidator: (value) => {
+        return !value && 'Debe ingresar un nombre de usuario';
     },
-    // para que al clickear fuera del spam no se cierre
-    allowOutsideClick:false,
-    allowEscapeKey:false,   
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+}).then((inputValue) => {
+    user = inputValue.value;//carga el nombre
+    userName.innerHTML = user;//muestro el nombre del usuario
+    
+})
 
-}).then((inputValue)=>{
-      user = inputValue.value;
-      userName.innerHTML = user;
-      // mandamos un evento solo cuando el usuario se conecte
-      socketClient.emit("authenticated", user);
-});
+//agrgo un evento al campo de texto
+btnSendMessage.addEventListener('click', (e) => {
+    e.preventDefault();
+    //envio el mensaje al socket del servidor
+    const message = {user: user, message: inputMessage.value};
+    socketClient.emit('messageChat', message);
+    //para solucionar que no llegue vacio
+    inputMessage.value = '';
+})
 
-sendMsg.addEventListener("click", () => {
-    const msg = {user:user,message:inputMsg.value}
-    // mandamos el mensaje al servidor
-    socketClient.emit("msgChat", msg);
-});
-
-//recibe el servidor
-socketClient.on("chatHistory",(dataServer) => {
-    let msgElements = "";
-    dataServer.forEach(element => {
-        // vamos arreglando parrafo a cada mensaje
-        msgElements *= `<p> Usuario: ${element.user}:  ${element.message}`
+//recibo el historial de chats
+socketClient.on('historyChat', (messageServer) => {
+    //replico el mensaje a los usuarios
+    let messageElement = ''
+    messageServer.forEach(element => {
+        messageElement += `
+        <label cl> Mensaje de: 
+            <span class="user">${element.user}</span>
+        </label>
+        <p class="areaChat">${element.message}</p> 
+        `
     });
 
-    // mostramos el historial completo
-    chatPanel.innerHTML = msgElements;
-});
-
-// Recibimos al cliente que se acaba de conectar
-socketClient.on("newUser", (data) => {
-     // si el usuario ya se registró
-     if (user) {
-        Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: data,
-            showConfirmButton: false,
-            timer: 1500
-          });
-     }
-});
+    chatPanel.innerHTML = messageElement
+})

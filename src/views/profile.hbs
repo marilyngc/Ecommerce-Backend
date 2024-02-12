@@ -1,13 +1,34 @@
-<h1>Pagina del perfil</h1>
 
 
+<div class="profile-box">
+    <h1>Perfil </h1>
+<p style="color: red">{{error}}</p>
+<p style="color: green">{{message}}</p>
+    {{#if userAdmin}}
+        {{!-- usuario admin --}}
+        <P>Nombre: {{userFirst_name}}</P>
+        <p>Email: {{userEmail}}</p>
+        <p>Rol: {{userRole}}</p>
+    {{/if}}
 
-{{error}}
-{{userName}}
-<p id="welcomeUser">{{user}} </p>
-<br>
-<button id="getProfile" >Get profile</button>
+    {{#if userGithub}}
+        {{!-- usuario github --}}
+        <P>Nombre: {{userFirst_name}}</P>
+        <p>Usuario: {{userUsername}}</p>
+        <p>Email: {{userEmail}}</p>
+        <p>Rol: {{userRole}}</p>
+            
+    {{/if}}
 
-<a href="/api/users/logout"> Cerrar sesion</a>
+    {{#if userUser}}
+        {{!-- usuario local --}}
+        <P>Nombre: {{userFirst_name}}</P>
+        <p>Apellido: {{userLast_name}}</p>
+        <p>Edad: {{userAge}}</p>
+        <p>Email: {{userEmail}}</p>
+        <p>Rol: {{userRole}}</p>
+    {{/if}}
+<a href="api/sessions/logout">Cerrar Sesion</a>
+</div>
 
-<script src="/js/profile.js"></script>
+

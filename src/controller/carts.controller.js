@@ -1,137 +1,205 @@
-// capa de control
+import { cartsService, productsService, ticketService } from "../repositories/index.js";
+import { v4 as uuidv4 } from 'uuid';
+import { logger } from "../helpers/logger.js";
 
-
-// importar la capa de servicio
-import { CartsService } from "../service/carts.service.js";
-import {ProductsService} from "../service/products.service.js";
-
-export class CartsController{
-      // usamos static para poder llamarlos directamente para no crear una instancia
-    static getCart = async (req, res) => {
+export class CartsController {
+    static getCarts = async (req, res) => {
         try {
-          
-          const carts = await CartsService.getCart();
-          res.json({ data: carts });
+            const carts = await cartsService.getCarts();
+            //console.log('getCarts controller');
+            res.json({ message: "Listado de carritos", data: carts });
         } catch (error) {
-          res.json({ error: error.message });
+            logger.error(error.message);
+            //console.log('error getCarts controller', error.message);
+            res.json({ status: "error", message: error.message });
         }
-      }
-
-      static getCartById = async (req, res) => {
+    }
+    static getCartsId = async (req, res) => {
         try {
-          const id = req.params.cid;
-          const cartId = await CartsService.getCarById(id);
-          console.log(cartId);
-          if (cartId) {
-            return res.json({ data: cartId });
-          } else {
-            res.json({ message: `No existe el ${id} solicitado` });
-          }
-        } catch (error) {
-          res.json({ error: error.message });
-        }
-      };
-
-
-      static postCart = async (req, res) => {
-        try {
-          const newCart = await CartsService.createCart();
-          res.json({ status: "succes", data: newCart });
-        } catch (error) {
-          res.json({ status: "error", error: error.message });
-        }
-      }
-
-      static postCartProductId = async (req, res) => {
-        try {
-          // validamos si los dos sirven
-          const cartId = parseInt(req.params.cid);
-          const productId = parseInt(req.params.pid);
-         
-          const cart = await CartsService.getCarById(cartId);
-          const product = await ProductsService.getProductsById(productId);
-          const newProduct = await CartsService.addProductToCart(cart, product);
-      
-          res.json({ message: "Agregando producto al carrito...", newProduct });
-        } catch (error) {
-          res.json({ error: error.message });
-        }
-      }
-
-      static deleteCartProductId = async (req, res) => {
-        try {
-          // validamos si los dos sirven
-          const cartId = parseInt(req.params.cid);
-          const productId = parseInt(req.params.pid);
-          const cart = await CartsService.getCarById(cartId);
-          const product = await ProductsService.getProductsById(productId);
-          const newProduct = await CartsService.deleteProduct(cart, product);
-      
-          res.json({ message: "Eliminando producto del carrito...", newProduct });
-        } catch (error) {
-          res.json({ error: error.message });
-        }
-      }
-
-      static putCartProductId = async (req, res) => {
-        try {
-          // validamos si los dos sirven
-          const cartId = parseInt(req.params.cid);
-          const productId = parseInt(req.params.pid);
-          const { newQuantity } = req.body;
-          const cart = await CartsService.getCarById(cartId);
-          const product = await ProductsService.getProductsById(productId);
-          const newProduct = await CartsService.updateProductCart(
-            cart,
-            product,
-            newQuantity
-          );
-      
-          res.json({ message: "Eliminando producto del carrito...", newProduct });
-        } catch (error) {
-          res.json({ error: error.message });
-        }
-      };
-
-      static purcharseCart = async(req,res) => {
-        try {
-          const {cid:cartId} = req.params;
-          const cart = await CartsService.getCarById(cartId);
-          console.log(cart)
-          const ticketProducts = [];
-          // los productos que se rechaza
-          const rejectedProducts = [];
-          // verificar el stock de cada producto
-          if (cart.products.lenght) {
-            for(let i = 0; i >cart.products.lenght;i++){
-              const cartProduct = cart.products[i];
-              const productInfo = cartProduct.productId;
-                // por cada producto comparar quantity con el stock
-                if (cartProduct.quantity <= productInfo.stock) {
-                  // agregamos los productos en stock
-                  ticketProducts.push(cartProduct);
-                }else{
-                  rejectedProducts.push(cartProduct);
-                }
-
-                //generamos el nuevo ticket
-                const newTicket = {
-                  code:34234,
-                  purcharse_datetime:new Date(),
-                  amount:ticketProducts.quantity,
-                  purcharse:req.user.email
-                }
-
-                // crear ticket en base de datos
-                // actualizar rl carrito del usuario con los productos rechazados
-                
-              
+            const idcarts = req.params.cid; //obtengo el parametro cid de la URL
+            //console.log('getCartsId controller');
+            //tarigo el caarito por medio de la populacion
+            const carts = await cartsService.getCartsId(idcarts);
+            if(carts){
+              res.json({ message: "Carrito encontrado", data: carts });
+            }else{
+              res.json({ status: "error", message: "Carrito no encontrado"});
             }
-          }else{
-            res.json({status:"error",message:"carrita está vacio"});
+            
+          } catch (error) {
+            logger.error(error.message);
+            res.json({ status: "error", message: error.message });
           }
+    }
+    static createCart = async (req, res) => {
+        try {
+            const newCart = await cartsService.createCart();
+            res.json({ message: "Carrito creado", data: newCart });
         } catch (error) {
-          res.json({ error: error.message });
+            logger.error(error.message);
+            res.json({ status: "error", message: error.message });
         }
-      }
+    }
+    static updateCartId = async (req, res) => {
+        try {
+            const { cid: idCart } = req.params; //obtengo el id del carrito
+            const newProduct = req.body;//obtengo el producto
+            const updatedCart = await cartsService.updateCartId(idCart, newProduct);// le paso el id y el cuerpo 
+            res.json({ message: "Carrito actualizado con exito", data: updatedCart });
+        }
+        catch (error) {
+            logger.error(error.message);
+            res.json({ status: "error",  message: error.message });
+        }
+    }
+    static addProduct = async (req, res) => {
+        try {
+            const { cid: idCarts, pid: idProduct } = req.params;
+            const cart = await cartsServiceartsService.getCartsId(idCarts);
+            const user = req.user.role;
+            const userPremium = req.user._id.toString();
+            const productOwner = cart.owner.toString();
+            if((productOwner === userPremium) && (user === "admin")) {
+                res.json({status: "error", message: "No puedes agregar un producto a un carrito" })
+            }else{
+                const product = await cartsService.addProduct(cart, idProduct);
+                res.json({ message: "success", data: product });
+            }
+
+            res.json({ message: "Producto agregado al carrito", data: result });
+        } catch (error) {
+            logger.info( error.message);
+            res.json({ status: "error", message: error.message });
+        }
+    }
+    static updateProductInCart = async (req, res) => {
+        try {
+            const { cid: idCarts, pid: idProduct } = req.params;
+            const newQuantity  = req.body.newQuantity;
+            const updatedCart = await cartsService.updateProductInCart(idCarts, idProduct, newQuantity);
+            res.json({ message: "success", data: updatedCart });
+        }
+        catch (error) {
+            logger.error(error.message);
+            res.json({ status: "error",  message: error.message });
+        }
+    }
+    static deleteCartId = async (req, res) => {
+        try {
+            const { cid: idCarts } = req.params;
+            const deletedCart = await cartsService.deleteCartId(idCarts);
+            res.json({ message: "Carrito eliminado con exito", data: deletedCart });
+            // res.json({ message: "Carrito con id ' " + cartId + " ' eliminado con exito", data: cartDeleted });
+        }
+        catch (error) {
+            logger.error(error.message);
+            res.json({ status: "error",  message: error.message });
+        }
+    }
+    static deleteProductInCart = async (req, res) => {
+        try {
+            const { cid: idCarts, pid: idProduct } = req.params;
+            const deletedProduct = await cartsService.deleteProductInCart(idCarts, idProduct);
+            res.json({ message: "Producto eliminado del carrito", data: deletedProduct });
+        }
+        catch (error) {
+            logger.error(error.message);
+            res.json({ status: "error",  message: error.message });
+        }
+    }
+    static purchaseCart = async (req, res) => {
+        try {
+            const { cid: idCarts } = req.params;
+            const cart = await cartsService.getCartsId(idCarts)
+            //console.log('carrito con los productos a comprar:', cart);
+
+            //verifico que el carrito no este vacio
+            if(cart.products.length > 0){
+                //tiket de la compra y los rechazados
+                const ticketProducts = []
+                const rejectedProducts = []
+
+                //varifico el stock de cada producto
+                for(let i = 0; i < cart.products.length; i++){
+
+                    const cartProduct = cart.products[i]
+                    //console.log('Productos en carrito:', cartProduct);
+                    const productInfo = cartProduct.productId
+                    //console.log('informacion del producto:', productInfo);
+
+                    //comparo la quantity con el stock
+                    if(cartProduct.quantity <= productInfo.stock){
+                       // console.log('Cantidad', cartProduct.quantity, 'stock', productInfo.stock);
+                        //agrego el producto al tiket
+                        ticketProducts.push(cartProduct)
+                       // console.log('tiketProducts:', ticketProducts);
+                        //resto el stock del producto comprado
+                        const newStock = productInfo.stock -= cartProduct.quantity
+                        //console.log('newStock:', newStock);
+                    }else{
+                        //console.log('Guardo los Rechazado')
+                        //agrego los productos rechazados
+                        rejectedProducts.push(cartProduct)
+                    }
+                }
+                //console.log('tiketProducts:', ticketProducts);
+                //console.log('rejectedProducts:', rejectedProducts);
+                //calculo el total de la compra
+                const total = ticketProducts.reduce((acc, item) => acc + item.quantity * item.productId.price, 0)
+                //console.log('total:', total);
+                const newTicket = {
+                    code: uuidv4(), 
+                    purchase_datetime: new Date(),
+                    amount: total,
+                    purchaser: req.user.email,
+                }
+                const tiket = await ticketService.createTicket(newTicket);
+                //res.json({ status: "success", message: "Compra realizada", data: tiket });
+                if(rejectedProducts.length >=1 && ticketProducts.length >=1){
+                    //console.log('Compra con Rechazos', rejectedProducts);
+                   
+                    for(let i = 0; i < ticketProducts.length; i++){
+                        //datos del producto, stock, y carrito
+                        let productIdInCart = ticketProducts[i]
+                        let productId = productIdInCart.productId._id
+                        let stock = productIdInCart.stock
+                        //console.log('productId:', productId, 'Id carrito:', idCarts, 'stock:', stock);
+
+                        //actualizo el stock del producto en db y limpio el carrito 
+                        await productsService.updateProduct(productId, {stock: stock})
+                        await cartsService.deleteProductInCart(idCarts, productId)
+     
+                    }
+                    logger.info('Compra realizada y borro el producto del carrito, dejo el rechazado');
+                    res.json({ status: "success", message: "Compra realizada, con rechazos", data: rejectedProducts });
+                }else if(rejectedProducts.length >=1 && ticketProducts.length == 0){
+                    logger.error('No se puede comprar por falta de stock')
+                    res.json({ status: "error", message: "no se puede comprar por falta de stock", data: rejectedProducts });
+                
+                }else{
+                    for(let i = 0; i < ticketProducts.length; i++){
+                        let productIdInCart = ticketProducts[i]
+                        let productId = productIdInCart.productId._id
+                        let stock = productIdInCart.productId.stock
+                        //console.log('productId:', productId, 'Id carrito:', idCarts, 'stock:', stock);
+                        
+                        //actualizo el stock del producto y limpio el carrito
+                        await productsService.updateProduct(productId, {stock: stock})
+                        await cartsService.deleteProductInCart(idCarts, productId)
+                      
+                    }
+
+                    logger.info('compra realizada(sin rechazos), actualizo el stock y borro el producto del carrito');
+                    res.json({ status: "success", message: "compra realizda con exito", data: ticketProducts, tiket });
+                }
+            }else{
+                logger.error('Controller Purchase,  El carrito esta vacio');
+                res.json({ status: "error", message: "El carrito no tiene productos" });
+            }
+        }
+        catch (error) {
+            logger.error('error purchaseCart controller', error.message);
+            res.json({ status: "error",  message: error.message });
+        } 
+    }
 }
