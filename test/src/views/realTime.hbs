@@ -1,0 +1,76 @@
+
+
+<section class="sectionProducts">
+    <form id="productForm">
+        <div class="login-box">
+          <h1 class="title">Agregar productos</h1>
+
+<p style="color: red">{{error}}</p>
+ <h2>Formulario para cargar productos</h2>
+ 
+
+    <div class="user-box">
+       <input type="text" name="title"  >
+         <label  for="title">Nombre del producto:</label>
+
+    </div>
+    <div class="user-box">
+       <input type="text" name="description" >
+         <label  for="description">Descripción del producto</label>
+    </div>
+    <div class="user-box">
+          <input type="text" name="price" >
+         <label  for="price">Precio:</label>
+    </div>
+    <div class="user-box">
+            <input type="text" name="code" >
+         <label  for="code">Código:</label>
+    </div>
+    <div class="user-box">
+         <input type="text" name="thumbnail" >
+   
+         <label  for="thumbnail">Imagen:</label>
+    </div>
+    <div class="user-box">
+        <input type="text" name="stock" >
+         <label  for="stock">Stock:</label>
+    </div>
+    <div class="user-box">
+         <input type="text" name="category" >
+         <label  for="category">Categoría del producto":</label>
+    </div>
+
+            <button type="submit">Agregar Producto</button>
+    
+   
+
+
+</div>
+
+
+
+    
+    </form>
+  
+</section>
+    
+   
+
+
+
+
+  <div class="containerProducts">
+    <h2 >Listado de Productos</h2>
+
+   
+    <ul class="productList" id="productList">
+
+    </ul>
+  </div>
+
+
+
+
+{{!-- configuro websocket del lado del cliente --}}
+<script src="socket.io/socket.io.js"></script>
+<script src="js/realTime.js"></script>

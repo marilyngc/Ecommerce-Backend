@@ -1,0 +1,45 @@
+
+<section class="sectionLogin">
+    
+
+<span class="message">{{message}}</span>
+
+<span class="error">{{error}}</span> 
+
+
+<form action="/api/sessions/login" method="post" >
+    <div class="login-box">
+  <h2>Login</h2>
+ 
+  <form>
+    <div class="user-box">
+      <input type="text" name="email" required="">
+         <label  for="email">Correo electronico:</label>
+
+    </div>
+    <div class="user-box">
+      <input type="password" name="password" required="">
+         <label  for="password">Contraseña:</label>
+    </div>
+       <button >Iniciar Sesión</button>
+    
+     <p>No tienes una cuenta? Registrate <a class="aqui" href="/register">aqui</a></p>
+  </form>
+  <hr>
+<a href="/forgot-password">Olvidaste tu Contraseña</a>
+</div>
+
+ 
+
+</form>
+
+
+</section>
+
+
+
+
+
+
+
+

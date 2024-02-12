@@ -9,15 +9,16 @@ loginForm.addEventListener("submit", async (e,token) => {
         email: e.target.email.value,
         password: e.target.password.value,
     };
-
+    console.log("formValues",formValues)
     try {
         const response = await fetch("/api/users/login", {
+            method: "POST",
+            body: JSON.stringify(formValues),
             headers: {
                 "Content-type": "application/json",
                 // "Authorization": `Bearer ${token}`
             },
-            method: "POST",
-            body: JSON.stringify(formValues),
+         
         });
 
         console.log("response",response)
@@ -25,7 +26,7 @@ loginForm.addEventListener("submit", async (e,token) => {
             const result = await response.json();
             if (result.status === "success") {
                 // console.log("status succes",result.status)
-                window.location.href = "profile";
+                window.location.href = "/profile";
             } else {
                 errorMsg.innerHTML = "No fue posible loguear el usuario";
             }

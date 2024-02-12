@@ -8,7 +8,7 @@ import { generateEmailToken, sendChangePasswordEmail, verifyEmailToken } from ".
 
 export class UsersControl {
   // usamos static para poder llamarlos directamente para no crear una instancia
-static redirectProfile = (req, res) => {
+static redirectProfile = async (req, res) => {
   try {
       // console.log("login-user", req.user);
 
@@ -39,12 +39,13 @@ static redirectProfile = (req, res) => {
   static getProfile = (req, res) => {
     // console.log("Usuario en getProfile:", req.user);
     const userName = req.user.email ;
-    res.render("/profile", { userName });
-    res.json({status:"success",message:"Peticion valida", data:req.user});
+    // console.log("Usuario ", userName);
+    res.render("profile", { userName });
+    // res.json({status:"success",message:"Peticion valida", data:req.user});
 };
 
   static redirectLogin = (req, res) => {
-    res.render("profile",{user:req.user});
+    res.render("profile",{user: req.user});
  
     // res.render("/login",{message:"Usuario registrado correctamente"});
       // res.redirect("/profile");

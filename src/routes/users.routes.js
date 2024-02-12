@@ -34,7 +34,7 @@ router.get("/fail-login",UsersControl.failLogin);
 
 
 
-router.get("/profile", passport.authenticate("jwtAuth",{session:false,
+router.post("/profile", passport.authenticate("jwtAuth",{session:false,
   failureRedirect:"/api/users/fail-auth"
 }),UsersControl.getProfile);
 // por defecto passport usa session. le indicamos que no vamos a usar session con {session:false} 

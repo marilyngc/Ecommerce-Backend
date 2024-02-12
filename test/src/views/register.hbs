@@ -1,0 +1,82 @@
+
+<section class="sectionLogin">
+    
+
+
+
+
+<form  action="/api/sessions/register" method="post" enctype="multipart/form-data" >
+    <div class="login-box">
+ <h1>Registro </h1>
+ 
+<p style="color: red;">{{error}}</p>
+
+
+<p>Ya tienes una cuenta? <a href="/login">Iniciar Sesión</a></p>
+  <form>
+    <div class="user-box">
+       
+
+      <input type="text" name="first_name">
+         <label for="first_name">Nombre:</label>
+
+    </div>
+    <div class="user-box">
+
+      
+        <input type="text" name="last_name">
+         <label for="last_name">Apellido:</label>
+    
+    </div>
+    <div class="user-box">
+
+
+    
+          <input type="number" name="age">
+          <label for="age">Edad:</label>
+    
+    </div>
+    <div class="user-box">
+
+     
+
+       <input type="email" name="email">
+        <label for="email">Email:</label>
+    
+    </div>
+    <div class="user-box">
+  
+
+    <input type="password" name="password">
+          <label for="password">Contraseña:</label>
+    
+    </div>
+    <div class="user-box">
+
+
+    
+      <input type="file" name="avatar">
+           <label for="file">Imagen</label><br>
+    
+    </div>
+  
+       <button>Registrarse</button>
+    
+     
+  </form>
+    <hr>
+  <a href="/api/sessions/register-github">
+
+    <button>Registrarse con GitHub</button>
+</a>
+
+
+
+</div>
+
+ 
+
+</form>
+
+
+</section>

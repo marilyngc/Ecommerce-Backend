@@ -6,7 +6,7 @@ import { createHash, inValidPassword } from "../utils.js"; // Asegúrate de que 
 
 
 import { config } from "./config.js";
-import { usersDao } from "../dao/factory.js";
+
 
 const JWTStrategy = jwt.Strategy;
 const extractJwt = jwt.ExtractJwt; //Extraer el token (cookie,query params, body, headers)
@@ -96,7 +96,9 @@ export const initializePassport = ()=>{
 //funcion para extraer el token de la cookie
 export const cookieExtractor = (req)=>{
     let token;
+    console.log("cookieExtractor",req.cookies)
     if(req && req.cookies){ //req?.cookies
+        
         token = req.cookies["cookieToken"];
     } else {
         token = null;

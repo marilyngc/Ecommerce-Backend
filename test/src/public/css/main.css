@@ -1,0 +1,59 @@
+body{
+    margin: 0 auto;
+    width: 100%;
+
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: white;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat-back.svg');
+    background-position: center;
+    background-repeat: repeat;
+    background-size: 7%;
+    background-color: rgb(31 41 55);
+}
+  
+  section{
+    position:relative;
+    width:1000px;
+    margin:0 auto;
+  }
+  nav{
+ 
+  
+    padding: 6rem 0 ;
+    width:100%;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color:#fff;
+   
+    padding:10px ;
+    
+  }
+  nav ul li  {
+    display:inline-block;
+  
+    list-style:none;
+    width:160px;
+    text-align:center;
+    font-family:Helvetica, sans-serif;
+    border: 1px dashed rgba(255,255,255, 0);
+    
+    padding:10px 0 10px 0;
+    /* margin:-1px -5px -1px -1px; */
+    cursor:pointer;
+    transition:all .2s;
+    -webkit-transition:all .2s;
+  }
+  nav ul li  :hover{
+    /* border:1px dashed #fff; */
+    background:rgba(255,255,255,.1);
+  }
+  nav ul{
+    border: 1px solid #fff;
+    position:absolute;
+    width:100%;
+    padding:0;
+    z-index:100;
+  }

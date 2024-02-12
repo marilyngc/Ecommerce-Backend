@@ -54,6 +54,7 @@ export class ViewsController {
     };
 
     static getProfile = (req,res) => {//la vista en main.hbs
+        console.log("viewProfile",req);
         res.render("profile",{user:req.user});
   
 };

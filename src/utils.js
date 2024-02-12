@@ -32,17 +32,18 @@ export const inValidPassword = (password,user)=>{
 
 // generar token
 export const generateToken = (user) => {
-    const token = jwt.sign({name:user.name, email:user.email},config.tokenKey.key);
+    const token = jwt.sign({name:user.name, email:user.email},config.tokenKey.key,{expiresIn:"24h"});
+    // console.log("generatetoken",token);
     return token;
 };
 
-console.log("generatetoken",generateToken);
+
 // validar token
 export const validateToken = (req,res,next) => {
     // lo vemos en el headers de postMan
     console.log("req.headers",req.headers)
     
-    const authHeader = req.get("Authorization");
+    const authHeader = req.headers["Authorization"];
 
 
     console.log("headers",authHeader);

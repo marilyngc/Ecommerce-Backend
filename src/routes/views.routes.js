@@ -10,7 +10,7 @@ router.get("/",ViewsController.getProductPaginate);
 
 router.get("/login", ViewsController.getLogin); 
 router.get("/signup", ViewsController.getSignup); 
-router.get("/profile",validateToken,ViewsController.getProfile); 
+router.get("/profile",ViewsController.getProfile); 
 router.get("/cart",ViewsController.getCart);
 router.get("/realtimeproducts",ViewsController.getRealtimeproducts);
 router.get("/forgot-password",(req,res) =>{
