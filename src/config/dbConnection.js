@@ -15,7 +15,10 @@ export class connectDB {
     }
 
     // const URL = config.mongo.url;
-    const connection =  mongoose.connect(URL);
+    const connection =  mongoose.connect(URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     logger.info("Conectado a la base de datos");
     return connection;
   }
