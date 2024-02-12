@@ -4,23 +4,20 @@ import { logger } from "../helpers/logger.js";
 export class connectDB {
   static #instance;
 
-  static async #getConnection() {
+  static #getConnection() {
+
     let URL;
-  
-    if (config.enviroment.persistence === 'test') {
-      URL = config.mongo.url_test;
-    } else {
-      URL = config.mongo.url;
+
+    if(config.enviroment.persistence === 'test'){
+        URL = config.mongo.url_test;
+    }else{
+        URL = config.mongo.url;
     }
-  
-    try {
-      const connection = await mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
-      logger.info("Conectado a la base de datos");
-      return connection;
-    } catch (error) {
-      logger.error("Error al conectar a la base de datos:", error);
-      throw error; // Puedes decidir cómo manejar el error aquí
-    }
+
+    // const URL = config.mongo.url;
+    const connection =  mongoose.connect(URL);
+    logger.info("Conectado a la base de datos");
+    return connection;
   }
 
   static getInstance() {
