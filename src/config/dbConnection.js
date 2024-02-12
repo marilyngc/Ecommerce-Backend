@@ -4,7 +4,7 @@ import { logger } from "../helpers/logger.js";
 export class connectDB {
   static #instance;
 
-  static #getConnection() {
+  static async #getConnection() {
 
     let URL;
 
@@ -14,8 +14,10 @@ export class connectDB {
         URL = config.mongo.url;
     }
 
+    console.log('URL:', URL); // Agrega este console.log para depurar
+
     // const URL = config.mongo.url;
-    const connection =  mongoose.connect(URL, {
+    const connection = await mongoose.connect(URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
