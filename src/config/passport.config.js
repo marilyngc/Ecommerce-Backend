@@ -85,40 +85,40 @@ export const initializePassport = () => {
         }
     ));
 
-    //estrategia para registro con github
-    passport.use('registerGithubStrategy', new GithubStrategy(
-        {
-            clientID: config.github.clientId ,
-            clientSecret: config.github.clientSecret,
-            callbackURL: config.github.callbackUrl
-        },
-        async (accessToken, refreshToken, profile, done) => {
-            try {
-                //console.log("paso por Passport registerGithubStrategy");
-                //console.log('Perfil', profile)
-                const createEmail = profile.email || `${profile.username}@github.com`;
-                const user = await usersSessionsService.getUserByEmail(createEmail)
+    // //estrategia para registro con github
+    // passport.use('registerGithubStrategy', new GithubStrategy(
+    //     {
+    //         clientID: config.github.clientId ,
+    //         clientSecret: config.github.clientSecret,
+    //         callbackURL: config.github.callbackUrl
+    //     },
+    //     async (accessToken, refreshToken, profile, done) => {
+    //         try {
+    //             //console.log("paso por Passport registerGithubStrategy");
+    //             //console.log('Perfil', profile)
+    //             const createEmail = profile.email || `${profile.username}@github.com`;
+    //             const user = await usersSessionsService.getUserByEmail(createEmail)
             
-                if(user){
-                    return done(null, user)
-                }
-                const newUser = {
-                    first_name: profile._json.name,
-                    last_name: profile.username,
-                    age: 0,
-                    email: createEmail,
-                    password: createHash(profile.id),
-                    role: 'user'
-                }
+    //             if(user){
+    //                 return done(null, user)
+    //             }
+    //             const newUser = {
+    //                 first_name: profile._json.name,
+    //                 last_name: profile.username,
+    //                 age: 0,
+    //                 email: createEmail,
+    //                 password: createHash(profile.id),
+    //                 role: 'user'
+    //             }
                 
-               // console.log(newUser)
-                const userCreated = await usersSessionsService.createUsers(newUser)
-                return done(null, userCreated)
-            } catch (error) {
-                return done(error)
-            }
-        }
-    ))
+    //            // console.log(newUser)
+    //             const userCreated = await usersSessionsService.createUsers(newUser)
+    //             return done(null, userCreated)
+    //         } catch (error) {
+    //             return done(error)
+    //         }
+    //     }
+    // ))
 
 
     //Estrategia JWT

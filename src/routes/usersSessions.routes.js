@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { config } from "../config/config.js";
 import { 
-    registerLocalStrategy, registerGithubStrategy, 
-    registerGithubStrategyFail, loginLocalStrategy, jwtAuth } from "../middlewares/auth.js";
+    registerLocalStrategy, loginLocalStrategy, jwtAuth } from "../middlewares/auth.js";
 import { UsersSessionsController } from "../controller/usersSessions.controller.js";
 import { uploadProfile } from "../utils.js";
 
@@ -14,9 +13,9 @@ router.post('/register', uploadProfile.single('avatar'), registerLocalStrategy, 
 router.get('/fail-register', UsersSessionsController.renderRegisterFail)
 /*----------------estrategia registro con github----------------*/
 //ruta registro con github
-router.get('/register-github', registerGithubStrategy)
-//ruta collback con github
-router.get('/githubCallback', registerGithubStrategyFail, UsersSessionsController.renderRegisterGithub)
+// router.get('/register-github', registerGithubStrategy)
+// //ruta collback con github
+// router.get('/githubCallback', registerGithubStrategyFail, UsersSessionsController.renderRegisterGithub)
 /*---------------- estrategia login ------------*/
 
 //logueo al usuario se admin o usuario locales//localhost:8080/api/sessions/login

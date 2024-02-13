@@ -14,13 +14,10 @@ export class connectDB {
         URL = config.mongo.url;
     }
 
-    console.log('URL:', URL); // Agrega este console.log para depurar
+    // console.log('URL:', URL); // Agrega este console.log para depurar
 
     // const URL = config.mongo.url;
-    const connection = await mongoose.connect(URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    const connection = await mongoose.connect(URL);
     logger.info("Conectado a la base de datos");
     return connection;
   }

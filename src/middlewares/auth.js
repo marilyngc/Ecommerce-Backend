@@ -24,14 +24,14 @@ export const registerLocalStrategy = passport.authenticate(
 
 
 
-export const registerGithubStrategy = passport.authenticate('registerGithubStrategy')
+// export const registerGithubStrategy = passport.authenticate('registerGithubStrategy')
 
-export const registerGithubStrategyFail = passport.authenticate(
-    'registerGithubStrategy', 
-    {
-        failureRedirect: '/api/sessions/fail-register',
-        session: false
-    })
+// export const registerGithubStrategyFail = passport.authenticate(
+//     'registerGithubStrategy', 
+//     {
+//         failureRedirect: '/api/sessions/fail-register',
+//         session: false
+//     })
 
 export const loginLocalStrategy =  passport.authenticate('loginLocalStrategy',
     {
